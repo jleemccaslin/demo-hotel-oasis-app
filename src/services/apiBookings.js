@@ -111,15 +111,16 @@ export async function updateBooking(id, obj) {
     .select()
     .single();
 
+  console.log(data);
+
   if (error) {
     console.error(error);
-    throw new Error("Booking could not be updated");
+    throw new Error("Booking could not be updated (API)");
   }
   return data;
 }
 
 export async function deleteBooking(id) {
-  // REMEMBER RLS POLICIES
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
 
   if (error) {

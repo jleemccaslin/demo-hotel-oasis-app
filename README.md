@@ -19,7 +19,6 @@ npm run dev
 
 ## Bugfix TODOs
 
-- Account creation email confirmation template requires personalization.
 - Sample bookings data grows stale after 24 hours.
   - Sample bookings data should auto-refresh periodically without manual upload.
 

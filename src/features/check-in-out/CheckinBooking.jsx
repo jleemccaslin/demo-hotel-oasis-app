@@ -70,8 +70,6 @@ function CheckinBooking() {
         breakfast: {},
       });
     }
-
-    checkin(bookingID);
   }
 
   return (
