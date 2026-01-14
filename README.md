@@ -17,7 +17,7 @@ npm run dev
 - More elaborate back-end component necessary for better security.
 - User-facing companion website for guests to browse properties and make bookings.
 
-## Bugfix TODOs
+## TODOs
 
 - Sample bookings data grows stale after 24 hours.
   - Sample bookings data should auto-refresh periodically without manual upload.
