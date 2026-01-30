@@ -10,7 +10,11 @@ const StyledTable = styled.div`
   overflow: hidden;
 `;
 
-const CommonRow = styled.div`
+interface CommonRowProps {
+  $columns: string;
+}
+
+const CommonRow = styled.div<CommonRowProps>`
   display: grid;
   grid-template-columns: ${(props) => props.$columns};
   column-gap: 2.4rem;
@@ -59,9 +63,26 @@ const Empty = styled.p`
   margin: 2.4rem;
 `;
 
-const TableContext = createContext();
+interface TableContextType {
+  $columns: string;
+}
 
-function Table({ $columns, children }) {
+const TableContext = createContext<TableContextType | undefined>(undefined);
+
+function useTableContext() {
+  const context = useContext(TableContext);
+  if (context === undefined) {
+    throw new Error("Table components must be used within a Table");
+  }
+  return context;
+}
+
+interface TableProps {
+  $columns: string;
+  children: React.ReactNode;
+}
+
+function Table({ $columns, children }: TableProps) {
   return (
     <TableContext.Provider value={{ $columns }}>
       <StyledTable role="table">{children}</StyledTable>
@@ -69,8 +90,12 @@ function Table({ $columns, children }) {
   );
 }
 
-function Header({ children }) {
-  const { $columns } = useContext(TableContext);
+interface HeaderProps {
+  children: React.ReactElement;
+}
+
+function Header({ children }: HeaderProps) {
+  const { $columns } = useTableContext();
 
   return (
     <StyledHeader role="row" as="header" $columns={$columns}>
@@ -79,8 +104,12 @@ function Header({ children }) {
   );
 }
 
-function Row({ children }) {
-  const { $columns } = useContext(TableContext);
+interface RowProps {
+  children: React.ReactElement;
+}
+
+function Row({ children }: RowProps) {
+  const { $columns } = useTableContext();
 
   return (
     <StyledRow role="row" $columns={$columns}>
@@ -89,7 +118,12 @@ function Row({ children }) {
   );
 }
 
-function Body({ data, render }) {
+interface BodyProps {
+  data: any;
+  render: any;
+}
+
+function Body({ data, render }: BodyProps) {
   if (!data.length) return <Empty>No data to show at the moment.</Empty>;
   return <StyledBody>{data.map(render)}</StyledBody>;
 }

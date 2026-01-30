@@ -4,6 +4,22 @@ import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
+// ============ TYPES ============
+interface ModalProps {
+  children: React.ReactNode;
+}
+
+interface OpenProps {
+  children: React.ReactElement;
+  opens: any;
+}
+
+interface WindowProps {
+  children: React.ReactElement;
+  name: string;
+}
+
+// ============ STYLED COMNPONENTS ============
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
@@ -53,9 +69,25 @@ const Button = styled.button`
   }
 `;
 
-const ModalContext = createContext();
+// ============ CONTEXT ============
+interface ModalContextType {
+  openName: string;
+  close: () => void;
+  open: (id: string) => void;
+}
 
-function Modal({ children }) {
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
+
+function useModalContext() {
+  const context = useContext(ModalContext);
+  if (context === undefined) {
+    throw new Error("Menu components must be used within a Menus component");
+  }
+  return context;
+}
+
+// ============ MAIN COMPONENT ============
+function Modal({ children }: ModalProps) {
   const [openName, setOpenName] = useState("");
 
   const close = () => setOpenName("");
@@ -68,14 +100,15 @@ function Modal({ children }) {
   );
 }
 
-function Open({ children, opens: opensWindowName }) {
-  const { open } = useContext(ModalContext);
+// ============ SUB-COMPONENTS ============
+function Open({ children, opens: opensWindowName }: OpenProps) {
+  const { open } = useModalContext();
 
   return cloneElement(children, { onClick: () => open(opensWindowName) });
 }
 
-function Window({ children, name }) {
-  const { openName, close } = useContext(ModalContext);
+function Window({ children, name }: WindowProps) {
+  const { openName, close } = useModalContext();
   const ref = useOutsideClick(close);
 
   if (name !== openName) return null;
@@ -89,7 +122,7 @@ function Window({ children, name }) {
         {cloneElement(children, { onCloseModal: close })}
       </StyledModal>
     </Overlay>,
-    document.body
+    document.body,
   );
 }
 

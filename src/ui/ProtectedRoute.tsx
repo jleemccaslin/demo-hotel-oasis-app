@@ -12,7 +12,11 @@ const FullPage = styled.div`
   justify-content: center;
 `;
 
-function ProtectedRoute({ children }) {
+interface ProtectedRouteProps {
+  children?: React.ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
   const navigate = useNavigate();
 
   // 1. Load authenticated user
@@ -25,7 +29,7 @@ function ProtectedRoute({ children }) {
         navigate("/login");
       }
     },
-    [isAuthenticated, isLoading, navigate, fetchStatus]
+    [isAuthenticated, isLoading, navigate, fetchStatus],
   );
 
   // 3. While loading, show spinner

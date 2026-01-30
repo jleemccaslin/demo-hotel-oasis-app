@@ -1,15 +1,17 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import styled, { css, RuleSet } from "styled-components";
 
-interface Props {
-  $size?: string;
-  $variation?: string;
+type Size = "small" | "medium" | "large";
+type Variation = "primary" | "secondary" | "danger";
+
+interface ButtonProps {
+  $size?: Size;
+  $variation?: Variation;
   disabled?: boolean;
-  onClick?: {};
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: React.ReactNode;
 }
 
-const sizes: object = {
+const sizes: Record<Size, RuleSet> = {
   small: css`
     font-size: 1.2rem;
     padding: 0.4rem 0.8rem;
@@ -29,7 +31,7 @@ const sizes: object = {
   `,
 };
 
-const variations = {
+const variations: Record<Variation, RuleSet> = {
   primary: css`
     color: var(--color-brand-50);
     background-color: var(--color-brand-600);
@@ -57,18 +59,12 @@ const variations = {
   `,
 };
 
-const Button: React.FC<Props> = styled.button`
+const Button = styled.button<ButtonProps>`
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
-
-  ${(props) => sizes[props.$size]};
-  ${(props) => variations[props.$variation]};
+  ${(props) => sizes[props.$size || "medium"]};
+  ${(props) => variations[props.$variation || "primary"]};
 `;
-
-Button.defaultProps = {
-  $variation: "primary",
-  $size: "medium",
-};
 
 export default Button;
