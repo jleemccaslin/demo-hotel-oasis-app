@@ -1,6 +1,15 @@
+import React from "react";
 import styled, { css } from "styled-components";
 
-const sizes = {
+interface Props {
+  $size?: string;
+  $variation?: string;
+  disabled?: boolean;
+  onClick?: {};
+  children?: React.ReactNode;
+}
+
+const sizes: object = {
   small: css`
     font-size: 1.2rem;
     padding: 0.4rem 0.8rem;
@@ -48,13 +57,13 @@ const variations = {
   `,
 };
 
-const Button = styled.button`
+const Button: React.FC<Props> = styled.button`
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
 
-  ${(props) => sizes[props.$size]}
-  ${(props) => variations[props.$variation]}
+  ${(props) => sizes[props.$size]};
+  ${(props) => variations[props.$variation]};
 `;
 
 Button.defaultProps = {

@@ -11,7 +11,7 @@ export async function getCabins() {
   return data;
 }
 
-export async function deleteCabin(id) {
+export async function deleteCabin(id: string) {
   const { error } = await supabase.from("cabins").delete().eq("id", id);
 
   if (error) {
@@ -20,33 +20,48 @@ export async function deleteCabin(id) {
   }
 }
 
-export async function createOrUpdateCabin(newCabin, id) {
-  // Tells us if image already existed (editing session, user did not update image)
-  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
+interface CabinData {
+  name: string;
+  maxCapacity: number;
+  regularPrice: number;
+  discount: number;
+  description: string;
+  image: string | File;
+}
 
-  const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
-    "/",
-    ""
-  );
+function isFile(image: string | File): image is File {
+  return image instanceof File;
+}
+
+export async function createOrUpdateCabin(newCabin: CabinData, id: string) {
+  // Tells us if image already existed (editing session, user did not update image)
+  const hasImagePath =
+    typeof newCabin.image === "string" &&
+    newCabin.image.startsWith(supabaseUrl);
+
+  const imageName = isFile(newCabin.image)
+    ? `${Math.random()}-${newCabin.image.name}`.replaceAll("/", "")
+    : "";
 
   const imagePath = hasImagePath
-    ? newCabin.image
+    ? (newCabin.image as string)
     : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
 
+  const cabinPayload = {
+    ...newCabin,
+    image: imagePath,
+  };
+
   // 1. Create/Edit Cabin
-  let query = supabase.from("cabins");
 
-  // A) CREATE
-  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
-
-  // B) UPDATE
-  if (id)
-    query = query
-      .update({ ...newCabin, image: imagePath })
-      .eq("id", id)
-      .select();
-
-  const { data, error } = await query.select().single();
+  const { data, error } = id
+    ? await supabase
+        .from("cabins")
+        .update(cabinPayload)
+        .eq("id", id)
+        .select()
+        .single()
+    : await supabase.from("cabins").insert([cabinPayload]).select().single();
 
   if (error) {
     console.error(error);
@@ -65,7 +80,7 @@ export async function createOrUpdateCabin(newCabin, id) {
     await supabase.from("cabins").delete().eq("id", data.id);
     console.error(storageError);
     throw new Error(
-      "Cabin image could not be uploaded and the cabin was not created"
+      "Cabin image could not be uploaded and the cabin was not created",
     );
   }
 

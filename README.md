@@ -19,8 +19,7 @@ npm run dev
 
 ## TODOs
 
-- Sample bookings data grows stale after 24 hours.
-  - Sample bookings data should auto-refresh periodically without manual upload.
+- Rebuild Button component to be fully TS compatible. It currently displays correctly for the user, but is not to spec, and TS complains.
 
 ## Bugs Being Monitored
 

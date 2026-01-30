@@ -35,11 +35,16 @@ const FilterButton = styled.button`
   }
 `;
 
-function Filter({ filterField, options }) {
+interface FilterProps {
+  filterField: any;
+  options: any;
+}
+
+function Filter({ filterField, options }: FilterProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentFilter = searchParams.get(filterField) || options.at(0).value;
 
-  function handleClick(value) {
+  function handleClick(value: string) {
     searchParams.set(filterField, value);
 
     // When new filter param is selected, reset to page 1 of results
@@ -48,9 +53,14 @@ function Filter({ filterField, options }) {
     setSearchParams(searchParams);
   }
 
+  interface Option {
+    value: string;
+    label: string;
+  }
+
   return (
     <StyledFilter>
-      {options.map((option) => (
+      {options.map((option: Option) => (
         <FilterButton
           key={option.value}
           onClick={() => handleClick(option.value)}

@@ -140,11 +140,21 @@ function Uploader() {
     >
       <h3>Reupload test data</h3>
 
-      <Button onClick={uploadAll} disabled={isLoading}>
+      <Button
+        onClick={uploadAll}
+        disabled={isLoading}
+        $size="medium"
+        $variation="primary"
+      >
         Cabins/Bookings
       </Button>
 
-      <Button onClick={uploadBookings} disabled={isLoading}>
+      <Button
+        onClick={uploadBookings}
+        disabled={isLoading}
+        $size="medium"
+        $variation="primary"
+      >
         Bookings ONLY
       </Button>
     </div>

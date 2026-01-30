@@ -1,6 +1,11 @@
 import styled, { css } from "styled-components";
 
-const Row = styled.div`
+interface Props {
+  type?: string;
+  children: React.ReactNode;
+}
+
+const Row: React.FC<Props> = styled.div`
   display: flex;
 
   ${(props) =>

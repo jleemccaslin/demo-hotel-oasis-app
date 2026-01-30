@@ -33,7 +33,16 @@ const Box = styled.div`
   }
 `;
 
-function ErrorFallback({ error, resetErrorBoundary }) {
+interface Error {
+  message: string;
+}
+
+interface ErrorFallbackProps {
+  error: Error;
+  resetErrorBoundary: (e: React.MouseEventHandler<HTMLButtonElement>) => void;
+}
+
+function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   return (
     <>
       <GlobalStyles />
