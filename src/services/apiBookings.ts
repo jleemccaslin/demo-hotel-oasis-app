@@ -13,6 +13,7 @@ interface Booking {
   status: "unconfirmed" | "checked-in" | "checked-out";
   totalPrice: number;
   extrasPrice?: number;
+  hasBreakfast?: boolean;
   isPaid?: boolean;
   cabins: {
     name?: string;
