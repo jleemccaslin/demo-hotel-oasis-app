@@ -138,7 +138,7 @@ function Uploader() {
         gap: "8px",
       }}
     >
-      <h3>Reupload test data</h3>
+      <h3>Upload test data</h3>
 
       <Button
         onClick={uploadAll}

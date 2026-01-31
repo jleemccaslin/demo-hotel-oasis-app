@@ -17,8 +17,8 @@ const Error = styled.span`
 `;
 
 interface FormRowVerticalProps {
-  label: string;
-  error: string;
+  label?: string;
+  error?: string;
   children: React.ReactElement;
 }
 

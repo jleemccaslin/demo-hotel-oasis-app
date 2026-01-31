@@ -23,8 +23,10 @@ function UpdateUserDataForm() {
   const [fullName, setFullName] = useState(currentFullName);
   const [avatar, setAvatar] = useState(null);
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const target = e.target as HTMLFormElement;
+
     if (!fullName) return;
 
     updateUser(
@@ -32,10 +34,19 @@ function UpdateUserDataForm() {
       {
         onSuccess: () => {
           setAvatar(null);
-          e.target.reset();
+          target.reset();
         },
-      }
+      },
     );
+  }
+
+  function handleAvatar(e: React.FormEvent) {
+    e.preventDefault();
+    const target = e.target as HTMLFormElement;
+
+    if (!target.files) return;
+
+    setAvatar(target.files[0]);
   }
 
   function handleCancel() {
@@ -61,20 +72,22 @@ function UpdateUserDataForm() {
         <FileInput
           id="avatar"
           accept="image/*"
-          onChange={(e) => setAvatar(e.target.files[0])}
+          onChange={handleAvatar}
           disabled={isUpdating}
         />
       </FormRow>
       <FormRow>
-        <Button
-          type="reset"
-          $variation="secondary"
-          disabled={isUpdating}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isUpdating}>Update account</Button>
+        <>
+          <Button
+            type="reset"
+            $variation="secondary"
+            disabled={isUpdating}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button disabled={isUpdating}>Update account</Button>
+        </>
       </FormRow>
     </Form>
   );

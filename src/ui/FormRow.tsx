@@ -38,7 +38,7 @@ const Error = styled.span`
 
 interface FormRowProps {
   label?: string;
-  error?: string;
+  error?: any;
   children?: React.ReactElement;
 }
 

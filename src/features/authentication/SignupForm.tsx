@@ -7,17 +7,26 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 
+interface OnSubmitProps {
+  fullName?: string;
+  email?: string;
+  password?: string;
+}
+
 function SignupForm() {
   const { signup, isLoading } = useSignup();
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  function onSubmit({ fullName, email, password }) {
+  function onSubmit({ fullName, email, password }: OnSubmitProps) {
+    if (fullName === undefined || email === undefined || password === undefined)
+      return;
+
     signup(
       { fullName, email, password },
       {
         onSettled: () => reset(),
-      }
+      },
     );
   }
 
@@ -81,16 +90,17 @@ function SignupForm() {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
-        <Button
-          $variation="secondary"
-          type="reset"
-          disabled={isLoading}
-          onClick={reset}
-        >
-          Reset form
-        </Button>
-        <Button disabled={isLoading}>Create new user</Button>
+        <>
+          <Button
+            $variation="secondary"
+            type="reset" // HTML Attribute, not for Styled Components
+            disabled={isLoading}
+            onClick={reset}
+          >
+            Reset form
+          </Button>
+          <Button disabled={isLoading}>Create new user</Button>
+        </>
       </FormRow>
     </Form>
   );

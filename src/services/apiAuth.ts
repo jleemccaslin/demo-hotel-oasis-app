@@ -65,7 +65,7 @@ export async function logout() {
 interface UpdateCurrentUserOptions {
   password?: string;
   fullName?: string;
-  avatar?: File;
+  avatar?: File | null;
 }
 
 export async function updateCurrentUser({

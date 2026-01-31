@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-const ButtonIcon = styled.button`
+interface ButtonIconProps {
+  disabled?: boolean;
+  onClick?: any;
+}
+
+const ButtonIcon = styled.button<ButtonIconProps>`
   background: none;
   border: none;
   padding: 0.6rem;
