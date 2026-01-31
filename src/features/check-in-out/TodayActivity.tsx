@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
 
-import { useTodayActivity } from "../check-in-out/useTodayActivity";
+import { useTodayActivity } from "./useTodayActivity";
 import Spinner from "../../ui/Spinner";
 import TodayItem from "./TodayItem";
 
@@ -40,8 +40,13 @@ const NoActivity = styled.p`
   margin-top: 0.8rem;
 `;
 
+interface Activities {
+  activities: any[];
+  isLoading: boolean;
+}
+
 function TodayActivity() {
-  const { activities, isLoading } = useTodayActivity();
+  const { activities = [], isLoading }: Activities = useTodayActivity();
 
   return (
     <StyledToday>

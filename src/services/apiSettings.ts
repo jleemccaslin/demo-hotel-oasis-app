@@ -10,8 +10,13 @@ export async function getSettings() {
   return data;
 }
 
+interface NewSetting {
+  [key: string]: string;
+}
+
 // We expect a newSetting object that looks like {setting: newValue}
-export async function updateSetting(newSetting: string) {
+export async function updateSetting(newSetting: NewSetting) {
+  console.log(newSetting);
   const { data, error } = await supabase
     .from("settings")
     .update(newSetting)

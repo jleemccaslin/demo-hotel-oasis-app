@@ -9,9 +9,9 @@ export function useUpdateSetting() {
     mutationFn: updateSettingAPI,
     onSuccess: () => {
       toast.success("Setting successfully edited");
-      queryClient.invalidateQueries({ queryKey: "settings" });
+      queryClient.invalidateQueries(["settings"]);
     },
-    onError: (err) => toast.error(err.message),
+    onError: (error: any) => toast.error(error.message),
   });
 
   return { isUpdating, updateSetting };

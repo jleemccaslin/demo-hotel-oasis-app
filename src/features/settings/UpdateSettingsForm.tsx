@@ -18,7 +18,11 @@ function UpdateSettingsForm() {
 
   const { isUpdating, updateSetting } = useUpdateSetting();
 
-  function handleUpdate(e, oldValue, field) {
+  function handleUpdate(
+    e: React.FocusEvent<HTMLInputElement>,
+    oldValue: number,
+    field: string,
+  ) {
     const { value } = e.target;
 
     if (!value) return;

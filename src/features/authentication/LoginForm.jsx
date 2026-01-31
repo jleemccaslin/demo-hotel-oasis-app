@@ -23,7 +23,7 @@ function LoginForm() {
           setEmail("");
           setPassword("");
         },
-      }
+      },
     );
   }
 

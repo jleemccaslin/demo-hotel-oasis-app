@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Button from "../../ui/Button";
 import Tag from "../../ui/Tag";
-import CheckoutButton from "../check-in-out/CheckoutButton";
+import CheckoutButton from "./CheckoutButton";
 import { Flag } from "../../ui/Flag";
 import { Link } from "react-router-dom";
 
@@ -24,8 +24,25 @@ const Guest = styled.div`
   font-weight: 500;
 `;
 
-function TodayItem({ activity }) {
-  const { id, status, guests, numNights } = activity;
+interface TodayItemProps {
+  activity: any;
+}
+
+interface Guests {
+  countryFlag: string;
+  nationality: string;
+  fullName: string;
+}
+
+interface Activity {
+  id: string;
+  status: string;
+  guests: Guests;
+  numNights: number;
+}
+
+function TodayItem({ activity }: TodayItemProps) {
+  const { id, status, guests, numNights }: Activity = activity;
 
   return (
     <StyledTodayItem>

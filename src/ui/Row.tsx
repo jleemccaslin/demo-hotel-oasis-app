@@ -1,30 +1,27 @@
-import styled, { css } from "styled-components";
+import styled, { css, RuleSet } from "styled-components";
 
-interface Props {
-  type?: string;
+type Type = "horizontal" | "vertical";
+
+interface RowProps {
+  type?: Type;
   children: React.ReactNode;
 }
 
-const Row: React.FC<Props> = styled.div`
+const types: Record<Type, RuleSet> = {
+  horizontal: css`
+    justify-content: space-between;
+    align-items: center;
+  `,
+  vertical: css`
+    flex-direction: column;
+    gap: 1.6rem;
+  `,
+};
+
+const Row = styled.div<RowProps>`
   display: flex;
 
-  ${(props) =>
-    props.type === "horizontal" &&
-    css`
-      justify-content: space-between;
-      align-items: center;
-    `}
-
-  ${(props) =>
-    props.type === "vertical" &&
-    css`
-      flex-direction: column;
-      gap: 1.6rem;
-    `}
+  ${(props) => types[props.type || "vertical"]};
 `;
-
-Row.defaultProps = {
-  type: "vertical",
-};
 
 export default Row;
