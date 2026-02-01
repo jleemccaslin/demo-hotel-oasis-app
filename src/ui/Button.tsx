@@ -1,5 +1,6 @@
 import styled, { css, RuleSet } from "styled-components";
 
+//============ TYPES ==============
 type Size = "small" | "medium" | "large";
 type Variation = "primary" | "secondary" | "danger";
 
@@ -11,6 +12,7 @@ interface ButtonProps {
   children?: React.ReactNode;
 }
 
+//============ STYLED COMPONENTS ==============
 const sizes: Record<Size, RuleSet> = {
   small: css`
     font-size: 1.2rem;
@@ -59,6 +61,7 @@ const variations: Record<Variation, RuleSet> = {
   `,
 };
 
+//============ MAIN COMPONENT ==============
 const Button = styled.button<ButtonProps>`
   border: none;
   border-radius: var(--border-radius-sm);

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { useDarkMode } from "../../context/DarkModeContext";
 
+//============ TYPES ==============
 interface ChartDataObject {
   duration: string;
   value: number;
@@ -20,6 +21,7 @@ interface DurationChartOptions {
   confirmedStays: any[];
 }
 
+//============ STYLED COMPONENTS ==============
 const ChartBox = styled.div`
   /* Box */
   background-color: var(--color-grey-0);
@@ -38,6 +40,7 @@ const ChartBox = styled.div`
   }
 `;
 
+//============ DATA OBJECTS ==============
 const startDataLight: ChartDataObject[] = [
   {
     duration: "1 night",
@@ -124,6 +127,7 @@ const startDataDark: ChartDataObject[] = [
   },
 ];
 
+//============ DATA FUNCTIONS ==============
 function prepareData(startData: ChartDataObject[], stays: any[]) {
   function incArrayValue(arr: any[], field: string) {
     return arr.map((obj) =>
@@ -149,6 +153,7 @@ function prepareData(startData: ChartDataObject[], stays: any[]) {
   return data;
 }
 
+//============ MAIN COMPONENT ==============
 function DurationChart({ confirmedStays }: DurationChartOptions) {
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;

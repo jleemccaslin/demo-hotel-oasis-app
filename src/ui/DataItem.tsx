@@ -1,6 +1,14 @@
 import { ReactElement } from "react";
 import styled from "styled-components";
 
+//============ TYPES ==============
+interface DataItemProps {
+  icon: ReactElement | string;
+  label: string;
+  children?: React.ReactNode;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledDataItem = styled.div`
   display: flex;
   align-items: center;
@@ -21,12 +29,7 @@ const Label = styled.span`
   }
 `;
 
-interface DataItemProps {
-  icon: ReactElement | string;
-  label: string;
-  children?: React.ReactNode;
-}
-
+//============ MAIN COMPONENT ==============
 function DataItem({ icon, label, children }: DataItemProps) {
   return (
     <StyledDataItem>

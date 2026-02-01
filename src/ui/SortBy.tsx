@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import Select from "./Select";
 
+// ============ TYPES ============
 interface Option {
   value: string;
   label: string;
@@ -10,6 +11,7 @@ interface SortByProps {
   options: Option[];
 }
 
+// ============ MAIN COMPONENT ============
 function SortBy({ options }: SortByProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get("sortBy") || "";

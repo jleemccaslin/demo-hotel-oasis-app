@@ -1,11 +1,24 @@
 import supabase, { supabaseUrl } from "./supabase";
 
+//============ TYPES ==============
 interface SignupOptions {
   fullName: string;
   email: string;
   password: string;
 }
 
+interface LoginOptions {
+  email: string;
+  password: string;
+}
+
+interface UpdateCurrentUserOptions {
+  password?: string;
+  fullName?: string;
+  avatar?: File | null;
+}
+
+//============ API FUNCTIONS ==============
 export async function signup({ fullName, email, password }: SignupOptions) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -21,11 +34,6 @@ export async function signup({ fullName, email, password }: SignupOptions) {
   if (error) throw new Error(error.message);
 
   return data;
-}
-
-interface LoginOptions {
-  email: string;
-  password: string;
 }
 
 export async function login({ email, password }: LoginOptions) {
@@ -60,12 +68,6 @@ export async function getCurrentUser() {
 export async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
-}
-
-interface UpdateCurrentUserOptions {
-  password?: string;
-  fullName?: string;
-  avatar?: File | null;
 }
 
 export async function updateCurrentUser({

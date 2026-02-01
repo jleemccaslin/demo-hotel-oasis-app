@@ -1,6 +1,15 @@
 import { ReactElement } from "react";
 import styled from "styled-components";
 
+//============ TYPES ==============
+interface StatOptions {
+  icon: ReactElement | string;
+  title: string;
+  value: string;
+  color: string;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledStat = styled.div`
   /* Box */
   background-color: var(--color-grey-0);
@@ -48,13 +57,7 @@ const Value = styled.p`
   font-weight: 500;
 `;
 
-interface StatOptions {
-  icon: ReactElement | string;
-  title: string;
-  value: string;
-  color: string;
-}
-
+//============ MAIN COMPONENT ==============
 function Stat({ icon, title, value, color }: StatOptions) {
   return (
     <StyledStat>

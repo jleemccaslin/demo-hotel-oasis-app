@@ -1,10 +1,22 @@
 import styled from "styled-components";
 
-// 1. Define props for StyledSelect
+// ============ TYPES ============
 interface StyledSelectProps {
   type?: "white" | "default";
 }
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectProps extends StyledSelectProps {
+  options: SelectOption[];
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+// ============ STYLED COMPONENTS ============
 const StyledSelect = styled.select<StyledSelectProps>`
   font-size: 1.4rem;
   padding: 0.8rem 1.2rem;
@@ -19,19 +31,7 @@ const StyledSelect = styled.select<StyledSelectProps>`
   box-shadow: var(--shadow-sm);
 `;
 
-// 2. Define the option structure
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
-// 3. Define props for the Select component
-interface SelectProps extends StyledSelectProps {
-  options: SelectOption[];
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}
-
+// ============ MAIN COMPONENT ============
 function Select({ options, value, onChange, ...props }: SelectProps) {
   return (
     <StyledSelect value={value} onChange={onChange} {...props}>

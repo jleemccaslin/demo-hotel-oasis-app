@@ -5,6 +5,25 @@ import CheckoutButton from "./CheckoutButton";
 import { Flag } from "../../ui/Flag";
 import { Link } from "react-router-dom";
 
+//============ TYPES =============
+interface TodayItemProps {
+  activity: any;
+}
+
+interface Guests {
+  countryFlag: string;
+  nationality: string;
+  fullName: string;
+}
+
+interface Activity {
+  id: string;
+  status: string;
+  guests: Guests;
+  numNights: number;
+}
+
+//============ STYLED COMPONENTS =============
 const StyledTodayItem = styled.li`
   display: grid;
   grid-template-columns: 9rem 2rem 1fr 7rem 9rem;
@@ -24,23 +43,7 @@ const Guest = styled.div`
   font-weight: 500;
 `;
 
-interface TodayItemProps {
-  activity: any;
-}
-
-interface Guests {
-  countryFlag: string;
-  nationality: string;
-  fullName: string;
-}
-
-interface Activity {
-  id: string;
-  status: string;
-  guests: Guests;
-  numNights: number;
-}
-
+//============ MAIN COMPONENT =============
 function TodayItem({ activity }: TodayItemProps) {
   const { id, status, guests, numNights }: Activity = activity;
 

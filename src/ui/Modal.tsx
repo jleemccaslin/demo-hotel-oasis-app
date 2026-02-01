@@ -5,6 +5,10 @@ import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 // ============ TYPES ============
+interface StyledModalProps {
+  ref: React.RefObject<HTMLElement>;
+}
+
 interface ModalProps {
   children: React.ReactNode;
 }
@@ -20,7 +24,7 @@ interface WindowProps {
 }
 
 // ============ STYLED COMNPONENTS ============
-const StyledModal = styled.div`
+const StyledModal = styled.div<StyledModalProps>`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -126,6 +130,7 @@ function Window({ children, name }: WindowProps) {
   );
 }
 
+//============ COMPOUND COMPONENT PATTERN ==============
 Modal.Open = Open;
 Modal.Window = Window;
 

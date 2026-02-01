@@ -1,5 +1,11 @@
 import supabase from "./supabase";
 
+//============ TYPES ==============
+interface NewSetting {
+  [key: string]: string;
+}
+
+//============ API FUNCTIONS ==============
 export async function getSettings() {
   const { data, error } = await supabase.from("settings").select("*").single();
 
@@ -8,10 +14,6 @@ export async function getSettings() {
     throw new Error("Settings could not be loaded");
   }
   return data;
-}
-
-interface NewSetting {
-  [key: string]: string;
 }
 
 // We expect a newSetting object that looks like {setting: newValue}

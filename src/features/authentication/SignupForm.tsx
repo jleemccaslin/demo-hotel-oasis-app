@@ -1,18 +1,18 @@
 import { useForm } from "react-hook-form";
-
 import { useSignup } from "./useSignup";
-
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 
+//============ TYPES ==============
 interface OnSubmitProps {
   fullName?: string;
   email?: string;
   password?: string;
 }
 
+//============ MAIN COMPONENT ==============
 function SignupForm() {
   const { signup, isLoading } = useSignup();
   const { register, formState, getValues, handleSubmit, reset } = useForm();

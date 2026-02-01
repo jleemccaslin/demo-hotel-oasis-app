@@ -8,6 +8,7 @@ import {
   HiOutlineUsers,
 } from "react-icons/hi2";
 
+//============ STYLED COMPONENTS ==============
 const NavList = styled.ul`
   display: flex;
   flex-direction: column;
@@ -53,6 +54,7 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+//============ MAIN COMPONENT ==============
 function MainNav() {
   return (
     <nav>

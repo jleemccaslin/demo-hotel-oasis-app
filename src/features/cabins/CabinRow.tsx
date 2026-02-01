@@ -12,10 +12,16 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 
+//============ TYPES =============
 interface ImgProps {
   src: string | File;
 }
 
+interface CabinData {
+  cabin: CabinDataFromForm;
+}
+
+//============ STYLED COMPONENTS =============
 const Img = styled.img<ImgProps>`
   display: block;
   width: 6.4rem;
@@ -43,10 +49,7 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-interface CabinData {
-  cabin: CabinDataFromForm;
-}
-
+//============ MAIN COMPONENT =============
 function CabinRow({ cabin }: CabinData) {
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { isCreating, createCabin } = useCreateCabin();

@@ -2,6 +2,15 @@ import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
 
+//============ TYPES ==============
+interface ConfirmDeleteProps {
+  resourceName: string;
+  onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onCloseModal?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledConfirmDelete = styled.div`
   width: 40rem;
   display: flex;
@@ -20,13 +29,7 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-interface ConfirmDeleteProps {
-  resourceName: string;
-  onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onCloseModal?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled?: boolean;
-}
-
+//============ MAIN COMPONENT ==============
 function ConfirmDelete({
   resourceName,
   onConfirm,

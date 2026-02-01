@@ -1,6 +1,7 @@
 import Button from "../../ui/Button";
 import { useCheckout } from "./useCheckout";
 
+//============ TYPES =============
 interface CheckoutButtonProps {
   bookingID: string | void;
 }
@@ -10,6 +11,7 @@ interface Checkout {
   isCheckingOut: boolean;
 }
 
+//============ MAIN COMPONENT =============
 function CheckoutButton({ bookingID }: CheckoutButtonProps) {
   const { checkout, isCheckingOut }: Checkout = useCheckout();
 

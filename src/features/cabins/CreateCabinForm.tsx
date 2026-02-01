@@ -11,6 +11,7 @@ import Textarea from "../../ui/Textarea";
 import FileInput from "../../ui/FileInput";
 import { CabinData } from "../../services/apiCabins";
 
+//============ TYPES =============
 export interface Cabin extends CabinData {
   id?: string;
   image: FileList | string; // FileList for new uploads, string for existing
@@ -21,6 +22,7 @@ interface CreateCabinFormOptions {
   onCloseModal?: () => void;
 }
 
+//============ MAIN COMPONENT =============
 function CreateCabinForm({
   cabinToUpdate = {},
   onCloseModal,

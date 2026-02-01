@@ -3,6 +3,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import styled from "styled-components";
 
+//============ STYLED COMPONENTS ==============
 const StyledAppLayout = styled.div`
   background-color: var(--color-grey-50);
   display: grid;
@@ -25,6 +26,7 @@ const Container = styled.div`
   gap: 3.2rem;
 `;
 
+//============ MAIN COMPONENT ==============
 function AppLayout() {
   return (
     <StyledAppLayout>

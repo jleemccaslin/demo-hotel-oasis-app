@@ -1,5 +1,15 @@
 import styled from "styled-components";
 
+//============ TYPES ==============
+interface CheckboxProps {
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  id: string;
+  children?: React.ReactNode;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledCheckbox = styled.div`
   display: flex;
   gap: 1.6rem;
@@ -25,14 +35,7 @@ const StyledCheckbox = styled.div`
   }
 `;
 
-interface CheckboxProps {
-  checked: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
-  id: string;
-  children?: React.ReactNode;
-}
-
+//============ MAIN COMPONENT ==============
 function Checkbox({
   checked,
   onChange,

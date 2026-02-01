@@ -1,5 +1,12 @@
 import styled from "styled-components";
+//============ TYPES ==============
+interface FormRowVerticalProps {
+  label?: string;
+  error?: string;
+  children: React.ReactElement;
+}
 
+//============ STYLED COMPONENTS ==============
 const StyledFormRow = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,12 +23,7 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-interface FormRowVerticalProps {
-  label?: string;
-  error?: string;
-  children: React.ReactElement;
-}
-
+//============ MAIN COMPONENT ==============
 function FormRowVertical({ label, error, children }: FormRowVerticalProps) {
   return (
     <StyledFormRow>

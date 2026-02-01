@@ -1,5 +1,12 @@
 import styled from "styled-components";
+//============ TYPES ==============
+interface FormRowProps {
+  label?: string;
+  error?: any;
+  children?: React.ReactElement;
+}
 
+//============ STYLED COMPONENTS ==============
 const StyledFormRow = styled.div`
   display: grid;
   align-items: center;
@@ -36,12 +43,7 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-interface FormRowProps {
-  label?: string;
-  error?: any;
-  children?: React.ReactElement;
-}
-
+//============ MAIN COMPONENT ==============
 function FormRow({ label, error, children }: FormRowProps) {
   return (
     <StyledFormRow>

@@ -3,6 +3,17 @@ import Heading from "./Heading";
 import GlobalStyles from "../styles/GlobalStyles";
 import Button from "./Button";
 
+//============ TYPES ==============
+interface Error {
+  message: string;
+}
+
+interface ErrorFallbackProps {
+  error: Error;
+  resetErrorBoundary: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledErrorFallback = styled.main`
   height: 100vh;
   background-color: var(--color-grey-50);
@@ -33,15 +44,7 @@ const Box = styled.div`
   }
 `;
 
-interface Error {
-  message: string;
-}
-
-interface ErrorFallbackProps {
-  error: Error;
-  resetErrorBoundary: (e: React.MouseEventHandler<HTMLButtonElement>) => void;
-}
-
+//============ MAIN COMPONENT ==============
 function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   return (
     <>

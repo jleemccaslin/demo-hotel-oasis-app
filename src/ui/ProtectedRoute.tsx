@@ -4,6 +4,12 @@ import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
+// ============ TYPES ============
+interface ProtectedRouteProps {
+  children?: React.ReactNode;
+}
+
+// ============ STYLED COMPONENTS ============
 const FullPage = styled.div`
   height: 100vh;
   background-color: var(--color-grey-50);
@@ -12,10 +18,7 @@ const FullPage = styled.div`
   justify-content: center;
 `;
 
-interface ProtectedRouteProps {
-  children?: React.ReactNode;
-}
-
+// ============ MAIN COMPONENT ============
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const navigate = useNavigate();
 

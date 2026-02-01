@@ -1,5 +1,6 @@
 import styled, { css, RuleSet } from "styled-components";
 
+// ============ TYPES ============
 type Type = "horizontal" | "vertical";
 
 interface RowProps {
@@ -7,6 +8,7 @@ interface RowProps {
   children: React.ReactNode;
 }
 
+// ============ STYLED COMPONENTS ============
 const types: Record<Type, RuleSet> = {
   horizontal: css`
     justify-content: space-between;
@@ -18,6 +20,7 @@ const types: Record<Type, RuleSet> = {
   `,
 };
 
+// ============ MAIN COMPONENT ============
 const Row = styled.div<RowProps>`
   display: flex;
 

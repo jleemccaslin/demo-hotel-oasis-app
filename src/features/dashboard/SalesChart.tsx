@@ -13,6 +13,13 @@ import {
 import { useDarkMode } from "../../context/DarkModeContext";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
 
+//============ TYPES ==============
+interface SalesChartOptions {
+  bookings: any;
+  numDays: number;
+}
+
+//============ STYLED COMPONENTS ==============
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
 
@@ -23,11 +30,7 @@ const StyledSalesChart = styled(DashboardBox)`
   }
 `;
 
-interface SalesChartOptions {
-  bookings: any;
-  numDays: number;
-}
-
+//============ MAIN COMPONENT ==============
 function SalesChart({ bookings, numDays }: SalesChartOptions) {
   const { isDarkMode } = useDarkMode();
 

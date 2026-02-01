@@ -1,5 +1,6 @@
 import styled, { css, RuleSet } from "styled-components";
 
+//============ TYPES ==============
 type Type = "regular" | "modal";
 
 interface FormProps {
@@ -7,6 +8,7 @@ interface FormProps {
   children?: React.ReactNode;
 }
 
+//============ STYLED COMPONENTS ==============
 const types: Record<Type, RuleSet> = {
   regular: css`
     padding: 2.4rem 4rem;
@@ -19,6 +21,7 @@ const types: Record<Type, RuleSet> = {
   `,
 };
 
+//============ MAIN COMPONENT ==============
 const Form = styled.form<FormProps>`
   overflow: hidden;
   font-size: 1.4rem;

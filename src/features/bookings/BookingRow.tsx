@@ -20,6 +20,12 @@ import { useCheckout } from "../check-in-out/useCheckout";
 import { useDeleteBooking } from "./useDeleteBooking";
 import { Booking as IBooking } from "../../services/apiBookings";
 
+//============ TYPES ==============
+interface Booking {
+  booking: IBooking;
+}
+
+//============ STYLED COMPONENTS ==============
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
@@ -47,10 +53,7 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
-interface Booking {
-  booking: IBooking;
-}
-
+//============ MAIN COMPONENT ==============
 function BookingRow({
   booking: {
     id: bookingID,

@@ -1,5 +1,25 @@
 import supabase, { supabaseUrl } from "./supabase";
 
+//============ TYPES ==============
+export interface CabinData {
+  name: string;
+  maxCapacity: number;
+  regularPrice: number;
+  discount: number;
+  description: string;
+}
+
+interface Cabin extends CabinData {
+  id?: string;
+  image: string | File;
+}
+
+interface CreateOrUpdateCabinOptions {
+  newCabinData: Cabin;
+  id?: string;
+}
+
+//============ API FUNCTIONS ==============
 export async function getCabins() {
   const { data, error } = await supabase.from("cabins").select("*");
 
@@ -20,24 +40,6 @@ export async function deleteCabin(id: string) {
     console.error(error);
     throw new Error("Cabin could not be deleted");
   }
-}
-
-export interface CabinData {
-  name: string;
-  maxCapacity: number;
-  regularPrice: number;
-  discount: number;
-  description: string;
-}
-
-interface Cabin extends CabinData {
-  id?: string;
-  image: string | File;
-}
-
-interface CreateOrUpdateCabinOptions {
-  newCabinData: Cabin;
-  id?: string;
 }
 
 function isFile(image: string | File): image is File {

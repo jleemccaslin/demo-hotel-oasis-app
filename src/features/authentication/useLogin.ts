@@ -3,11 +3,13 @@ import { login as loginAPI } from "../../services/apiAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
+//============ TYPES ==============
 interface MutationOptions {
   email: string;
   password: string;
 }
 
+//============ QUERY ==============
 export function useLogin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();

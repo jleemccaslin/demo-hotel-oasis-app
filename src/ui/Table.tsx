@@ -1,6 +1,34 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
 
+// ============ TYPES ============
+interface TableContextType {
+  $columns: string;
+}
+
+interface CommonRowProps {
+  $columns: string;
+}
+
+interface TableProps {
+  $columns: string;
+  children: React.ReactNode;
+}
+
+interface HeaderProps {
+  children: React.ReactNode;
+}
+
+interface RowProps {
+  children: React.ReactNode;
+}
+
+interface BodyProps {
+  data: any;
+  render: any;
+}
+
+// ============ STYLED COMPONENTS ============
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
 
@@ -9,10 +37,6 @@ const StyledTable = styled.div`
   border-radius: 7px;
   overflow: hidden;
 `;
-
-interface CommonRowProps {
-  $columns: string;
-}
 
 const CommonRow = styled.div<CommonRowProps>`
   display: grid;
@@ -50,7 +74,7 @@ const Footer = styled.footer`
   justify-content: center;
   padding: 1.2rem;
 
-  /* This will hide the footer when it contains no child elements. Possible thanks to the parent selector :has 🎉 */
+  /* This will hide the footer when it contains no child elements */
   &:not(:has(*)) {
     display: none;
   }
@@ -63,10 +87,7 @@ const Empty = styled.p`
   margin: 2.4rem;
 `;
 
-interface TableContextType {
-  $columns: string;
-}
-
+// ============ CONTEXT ============
 const TableContext = createContext<TableContextType | undefined>(undefined);
 
 function useTableContext() {
@@ -77,11 +98,7 @@ function useTableContext() {
   return context;
 }
 
-interface TableProps {
-  $columns: string;
-  children: React.ReactNode;
-}
-
+// ============ MAIN COMPONENT ============
 function Table({ $columns, children }: TableProps) {
   return (
     <TableContext.Provider value={{ $columns }}>
@@ -90,10 +107,7 @@ function Table({ $columns, children }: TableProps) {
   );
 }
 
-interface HeaderProps {
-  children: React.ReactNode;
-}
-
+// ============ SUB-COMPONENTS ============
 function Header({ children }: HeaderProps) {
   const { $columns } = useTableContext();
 
@@ -102,10 +116,6 @@ function Header({ children }: HeaderProps) {
       {children}
     </StyledHeader>
   );
-}
-
-interface RowProps {
-  children: React.ReactNode;
 }
 
 function Row({ children }: RowProps) {
@@ -118,16 +128,12 @@ function Row({ children }: RowProps) {
   );
 }
 
-interface BodyProps {
-  data: any;
-  render: any;
-}
-
 function Body({ data, render }: BodyProps) {
   if (!data.length) return <Empty>No data to show at the moment.</Empty>;
   return <StyledBody>{data.map(render)}</StyledBody>;
 }
 
+// ============ COMPOUND COMPONENT PATTERN ============
 Table.Header = Header;
 Table.Row = Row;
 Table.Body = Body;

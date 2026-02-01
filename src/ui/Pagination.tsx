@@ -4,6 +4,16 @@ import styled from "styled-components";
 
 import { PAGE_SIZE } from "../utils/constants";
 
+// ============ TYPES ============
+interface PaginationButtonProps {
+  active?: string;
+}
+
+interface PaginationProps {
+  count: number | undefined;
+}
+
+// ============ STYLED COMPONENTS ============
 const StyledPagination = styled.div`
   width: 100%;
   display: flex;
@@ -24,10 +34,6 @@ const Buttons = styled.div`
   display: flex;
   gap: 0.6rem;
 `;
-
-interface PaginationButtonProps {
-  active?: string;
-}
 
 const PaginationButton = styled.button<PaginationButtonProps>`
   background-color: ${(props) =>
@@ -64,10 +70,7 @@ const PaginationButton = styled.button<PaginationButtonProps>`
   }
 `;
 
-interface PaginationProps {
-  count: number | undefined;
-}
-
+// ============ MAIN COMPONENT ============
 function Pagination({ count }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = !searchParams.get("page")

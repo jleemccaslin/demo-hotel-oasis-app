@@ -7,6 +7,13 @@ import { useTodayActivity } from "./useTodayActivity";
 import Spinner from "../../ui/Spinner";
 import TodayItem from "./TodayItem";
 
+//============ TYPES =============
+interface Activities {
+  activities: any[];
+  isLoading: boolean;
+}
+
+//============ STYLED COMPONENTS =============
 const StyledToday = styled.div`
   /* Box */
   background-color: var(--color-grey-0);
@@ -40,11 +47,7 @@ const NoActivity = styled.p`
   margin-top: 0.8rem;
 `;
 
-interface Activities {
-  activities: any[];
-  isLoading: boolean;
-}
-
+//============ MAIN COMPONENT =============
 function TodayActivity() {
   const { activities = [], isLoading }: Activities = useTodayActivity();
 
