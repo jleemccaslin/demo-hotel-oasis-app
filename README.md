@@ -6,7 +6,7 @@ Built in Vite with React, TypeScript and a Supabase database. Uses React Query, 
 [Play around with this app on Netlify](https://hotel-oasis-demo.netlify.app/). 
 
 ## Local Installation
-node v. 25.1.0 suggested.
+node v. 25.1.0 or higher suggested. Earlier versions may or may not work.
 Requires an API Key to a properly set up Supabase database to run locally, and a user account in the database to login.
 
 ```
@@ -16,7 +16,7 @@ npm run dev
 
 ## Roadmap
 
-- User-facing companion website for guests to browse properties and make bookings
+- User-facing companion website coming next for guests to browse properties and make bookings
 - React Query v4 -> v5 upgrade
 - Further TypeScript enhancements
 
