@@ -1,4 +1,4 @@
-# Demo Project: Hotel Guest/Bookings Management App
+# Demo: Hotel Guest/Bookings Management App
 
 Built in Vite with React, TypeScript and a Supabase database. Uses React Query, React Hook Form, Recharts, Styled Components, and other libraries to render a fully-featured app for hotel staff managing property bookings, guest information, check-ins/check-outs, cabin listings, and sales data. Includes the ability to add other employee user accounts and to do basic management of those accounts such as updating name, password, and personal avatar.
 
