@@ -11,15 +11,11 @@ npm install
 npm run dev
 ```
 
-## Feature Roadmap
+## Roadmap
 
-- Further data input sanitization and .env handling required.
-- More elaborate back-end component necessary for better security.
-- User-facing companion website for guests to browse properties and make bookings.
-
-## TODOs
-
-- Rebuild Button component to be fully TS compatible. It currently displays correctly for the user, but is not to spec, and TS complains.
+- User-facing companion website for guests to browse properties and make bookings
+- React Query v4 -> v5 upgrade
+- Further TypeScript enhancements
 
 ## Bugs Being Monitored
 
