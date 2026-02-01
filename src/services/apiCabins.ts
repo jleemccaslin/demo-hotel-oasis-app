@@ -49,7 +49,6 @@ export async function createOrUpdateCabin({
   id,
 }: CreateOrUpdateCabinOptions) {
   // Tells us if image already existed (editing session, user did not update image)
-  console.log(newCabinData);
   const hasImagePath =
     typeof newCabinData.image === "string" &&
     newCabinData.image.startsWith(supabaseUrl);

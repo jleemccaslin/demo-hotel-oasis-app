@@ -10,6 +10,16 @@ import {
 } from "recharts";
 import { useDarkMode } from "../../context/DarkModeContext";
 
+interface ChartDataObject {
+  duration: string;
+  value: number;
+  color: string;
+}
+
+interface DurationChartOptions {
+  confirmedStays: any[];
+}
+
 const ChartBox = styled.div`
   /* Box */
   background-color: var(--color-grey-0);
@@ -28,7 +38,7 @@ const ChartBox = styled.div`
   }
 `;
 
-const startDataLight = [
+const startDataLight: ChartDataObject[] = [
   {
     duration: "1 night",
     value: 0,
@@ -71,7 +81,7 @@ const startDataLight = [
   },
 ];
 
-const startDataDark = [
+const startDataDark: ChartDataObject[] = [
   {
     duration: "1 night",
     value: 0,
@@ -114,16 +124,14 @@ const startDataDark = [
   },
 ];
 
-function prepareData(startData, stays) {
-  // A bit ugly code, but sometimes this is what it takes when working with real data 😅
-
-  function incArrayValue(arr, field) {
+function prepareData(startData: ChartDataObject[], stays: any[]) {
+  function incArrayValue(arr: any[], field: string) {
     return arr.map((obj) =>
-      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
+      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj,
     );
   }
 
-  const data = stays
+  const data: ChartDataObject[] = stays
     .reduce((arr, cur) => {
       const num = cur.numNights;
       if (num === 1) return incArrayValue(arr, "1 night");
@@ -136,12 +144,12 @@ function prepareData(startData, stays) {
       if (num >= 21) return incArrayValue(arr, "21+ nights");
       return arr;
     }, startData)
-    .filter((obj) => obj.value > 0);
+    .filter((obj: any) => obj.value > 0);
 
   return data;
 }
 
-function DurationChart({ confirmedStays }) {
+function DurationChart({ confirmedStays }: DurationChartOptions) {
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData, confirmedStays);
@@ -161,7 +169,7 @@ function DurationChart({ confirmedStays }) {
             cy="50%"
             paddingAngle={3}
           >
-            {data.map((entry) => (
+            {data.map((entry: any) => (
               <Cell
                 fill={entry.color}
                 stroke={entry.color}

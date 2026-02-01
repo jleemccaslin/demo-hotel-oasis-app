@@ -23,7 +23,12 @@ const StyledSalesChart = styled(DashboardBox)`
   }
 `;
 
-function SalesChart({ bookings, numDays }) {
+interface SalesChartOptions {
+  bookings: any;
+  numDays: number;
+}
+
+function SalesChart({ bookings, numDays }: SalesChartOptions) {
   const { isDarkMode } = useDarkMode();
 
   const colors = isDarkMode
@@ -40,7 +45,7 @@ function SalesChart({ bookings, numDays }) {
         background: "#fff",
       };
 
-  const allDates = eachDayOfInterval({
+  const allDates: any[] = eachDayOfInterval({
     start: subDays(new Date(), numDays - 1),
     end: new Date(),
   });
@@ -49,11 +54,11 @@ function SalesChart({ bookings, numDays }) {
     return {
       label: format(date, "MMM dd"),
       totalSales: bookings
-        .filter((booking) => isSameDay(date, new Date(booking.created_at)))
-        .reduce((acc, cur) => acc + cur.totalPrice, 0),
+        .filter((booking: any) => isSameDay(date, new Date(booking.created_at)))
+        .reduce((acc: any, cur: any) => acc + cur.totalPrice, 0),
       extrasSales: bookings
-        .filter((booking) => isSameDay(date, new Date(booking.created_at)))
-        .reduce((acc, cur) => acc + cur.extrasPrice, 0),
+        .filter((booking: any) => isSameDay(date, new Date(booking.created_at)))
+        .reduce((acc: any, cur: any) => acc + cur.extrasPrice, 0),
     };
   });
 
