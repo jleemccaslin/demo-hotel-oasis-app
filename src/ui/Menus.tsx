@@ -29,11 +29,11 @@ interface MenusProps {
 }
 
 interface ToggleProps {
-  id: string;
+  id: string | undefined;
 }
 
 interface ListProps {
-  id: string;
+  id: string | undefined;
   children: React.ReactNode;
 }
 
@@ -46,6 +46,7 @@ interface ButtonProps {
 
 interface StyledListProps {
   $position: Position;
+  ref?: React.RefObject<HTMLElement>;
 }
 
 // ============ STYLED COMPONENTS ============
@@ -147,6 +148,8 @@ function Toggle({ id }: ToggleProps) {
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
+
+    if (id === undefined) return;
 
     openID === id ? close() : open(id);
   }

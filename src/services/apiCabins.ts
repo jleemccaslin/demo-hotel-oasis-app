@@ -12,6 +12,8 @@ export async function getCabins() {
 }
 
 export async function deleteCabin(id: string) {
+  if (id === "") return;
+
   const { error } = await supabase.from("cabins").delete().eq("id", id);
 
   if (error) {
@@ -20,35 +22,48 @@ export async function deleteCabin(id: string) {
   }
 }
 
-interface CabinData {
+export interface CabinData {
   name: string;
   maxCapacity: number;
   regularPrice: number;
   discount: number;
   description: string;
+}
+
+interface Cabin extends CabinData {
+  id?: string;
   image: string | File;
+}
+
+interface CreateOrUpdateCabinOptions {
+  newCabinData: Cabin;
+  id?: string;
 }
 
 function isFile(image: string | File): image is File {
   return image instanceof File;
 }
 
-export async function createOrUpdateCabin(newCabin: CabinData, id: string) {
+export async function createOrUpdateCabin({
+  newCabinData,
+  id,
+}: CreateOrUpdateCabinOptions) {
   // Tells us if image already existed (editing session, user did not update image)
+  console.log(newCabinData);
   const hasImagePath =
-    typeof newCabin.image === "string" &&
-    newCabin.image.startsWith(supabaseUrl);
+    typeof newCabinData.image === "string" &&
+    newCabinData.image.startsWith(supabaseUrl);
 
-  const imageName = isFile(newCabin.image)
-    ? `${Math.random()}-${newCabin.image.name}`.replaceAll("/", "")
+  const imageName = isFile(newCabinData.image)
+    ? `${Math.random()}-${newCabinData.image.name}`.replaceAll("/", "")
     : "";
 
   const imagePath = hasImagePath
-    ? (newCabin.image as string)
+    ? (newCabinData.image as string)
     : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
 
   const cabinPayload = {
-    ...newCabin,
+    ...newCabinData,
     image: imagePath,
   };
 
@@ -73,7 +88,7 @@ export async function createOrUpdateCabin(newCabin: CabinData, id: string) {
 
   const { error: storageError } = await supabase.storage
     .from("cabin-images")
-    .upload(imageName, newCabin.image);
+    .upload(imageName, newCabinData.image);
 
   // 3. Delete cabin if there was an error uploading the image
   if (storageError) {

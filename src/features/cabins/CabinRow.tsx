@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
 
 import CreateCabinForm from "./CreateCabinForm";
+import { Cabin as CabinDataFromForm } from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
@@ -11,7 +12,11 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 
-const Img = styled.img`
+interface ImgProps {
+  src: string | File;
+}
+
+const Img = styled.img<ImgProps>`
   display: block;
   width: 6.4rem;
   aspect-ratio: 3 / 2;
@@ -38,7 +43,11 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-function CabinRow({ cabin }) {
+interface CabinData {
+  cabin: CabinDataFromForm;
+}
+
+function CabinRow({ cabin }: CabinData) {
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { isCreating, createCabin } = useCreateCabin();
 
@@ -53,13 +62,16 @@ function CabinRow({ cabin }) {
   } = cabin;
 
   function handleDuplicate() {
-    createCabin({
+    const data = {
       name: `Copy of ${name}`,
       maxCapacity,
       regularPrice,
       discount,
       description,
       image,
+    };
+    createCabin({
+      newCabinData: { ...data, image },
     });
   }
 
@@ -104,7 +116,7 @@ function CabinRow({ cabin }) {
               <ConfirmDelete
                 resourceName="cabins"
                 disabled={isDeleting}
-                onConfirm={() => deleteCabin(cabinID)}
+                onConfirm={() => deleteCabin(cabinID ?? "")}
               />
             </Modal.Window>
           </Menus.Menu>

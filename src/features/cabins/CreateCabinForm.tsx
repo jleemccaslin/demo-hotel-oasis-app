@@ -9,8 +9,22 @@ import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import Textarea from "../../ui/Textarea";
 import FileInput from "../../ui/FileInput";
+import { CabinData } from "../../services/apiCabins";
 
-function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
+export interface Cabin extends CabinData {
+  id?: string;
+  image: FileList | string; // FileList for new uploads, string for existing
+}
+
+interface CreateCabinFormOptions {
+  cabinToUpdate?: Cabin | Record<string, never>;
+  onCloseModal?: () => void;
+}
+
+function CreateCabinForm({
+  cabinToUpdate = {},
+  onCloseModal,
+}: CreateCabinFormOptions) {
   const { isCreating, createCabin } = useCreateCabin();
   const { isUpdating, updateCabin } = useUpdateCabin();
   const isWorking = isCreating || isUpdating;
@@ -24,21 +38,33 @@ function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
   });
   const { errors } = formState;
 
-  function onSubmit(data) {
+  function onSubmit(data: Cabin) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isUpdateSession) {
-      updateCabin({ newCabinData: { ...data, image }, id: updateID });
-      onCloseModal?.();
-    } else
-      createCabin(
-        { ...data, image },
+      updateCabin(
+        {
+          newCabinData: { ...data, image },
+          id: updateID,
+        },
         {
           onSuccess: (data) => {
             reset();
             onCloseModal?.();
           },
-        }
+        },
+      );
+    } else
+      createCabin(
+        {
+          newCabinData: { ...data, image },
+        },
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        },
       );
   }
 
@@ -64,6 +90,7 @@ function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
           id="maxCapacity"
           disabled={isWorking}
           {...register("maxCapacity", {
+            valueAsNumber: true,
             required: requiredMessage,
             min: {
               value: 1,
@@ -79,6 +106,7 @@ function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
           id="regularPrice"
           disabled={isWorking}
           {...register("regularPrice", {
+            valueAsNumber: true,
             required: requiredMessage,
             min: {
               value: 1,
@@ -95,8 +123,9 @@ function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
           defaultValue="0"
           disabled={isWorking}
           {...register("discount", {
+            valueAsNumber: true,
             validate: (value) =>
-              Number(value) < Number(getValues().regularPrice) ||
+              value < getValues().regularPrice ||
               "Discount should be less than the regular price",
           })}
         />
@@ -127,16 +156,18 @@ function CreateCabinForm({ cabinToUpdate = {}, onCloseModal }) {
       </FormRow>
 
       <FormRow>
-        <Button
-          $variation="secondary"
-          type="reset"
-          onClick={() => onCloseModal?.()}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isWorking}>
-          {isUpdateSession ? "Update cabin" : "Create new cabin"}
-        </Button>
+        <>
+          <Button
+            $variation="secondary"
+            type="reset"
+            onClick={() => onCloseModal?.()}
+          >
+            Cancel
+          </Button>
+          <Button disabled={isWorking}>
+            {isUpdateSession ? "Update cabin" : "Create new cabin"}
+          </Button>
+        </>
       </FormRow>
     </Form>
   );
