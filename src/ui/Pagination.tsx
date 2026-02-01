@@ -65,7 +65,7 @@ const PaginationButton = styled.button<PaginationButtonProps>`
 `;
 
 interface PaginationProps {
-  count: number;
+  count: number | undefined;
 }
 
 function Pagination({ count }: PaginationProps) {
@@ -74,6 +74,7 @@ function Pagination({ count }: PaginationProps) {
     ? 1
     : Number(searchParams.get("page"));
 
+  if (count === undefined) return;
   const pageCount = Math.ceil(count / PAGE_SIZE);
 
   function prevPage() {

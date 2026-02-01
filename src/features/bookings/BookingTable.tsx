@@ -11,7 +11,7 @@ function BookingTable() {
   const { isLoading, bookings, count } = useBookings();
 
   if (isLoading) return <Spinner />;
-  if (!bookings.length) return <Empty resourceName="bookings" />;
+  if (!bookings || !bookings.length) return <Empty resourceName="bookings" />;
 
   return (
     <Menus>
@@ -27,7 +27,7 @@ function BookingTable() {
 
         <Table.Body
           data={bookings}
-          render={(booking) => (
+          render={(booking: any) => (
             <BookingRow key={booking.id} booking={booking} />
           )}
         />

@@ -91,7 +91,7 @@ function Table({ $columns, children }: TableProps) {
 }
 
 interface HeaderProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }
 
 function Header({ children }: HeaderProps) {
@@ -105,7 +105,7 @@ function Header({ children }: HeaderProps) {
 }
 
 interface RowProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }
 
 function Row({ children }: RowProps) {

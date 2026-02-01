@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import styled from "styled-components";
 
 const StyledDataItem = styled.div`
@@ -21,7 +22,7 @@ const Label = styled.span`
 `;
 
 interface DataItemProps {
-  icon: string;
+  icon: ReactElement | string;
   label: string;
   children?: React.ReactNode;
 }

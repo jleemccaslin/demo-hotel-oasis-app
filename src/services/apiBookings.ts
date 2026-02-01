@@ -3,7 +3,7 @@ import supabase from "./supabase";
 import { PAGE_SIZE } from "../utils/constants";
 
 // ============ TYPES ============
-interface Booking {
+export interface Booking {
   id: string;
   created_at: string;
   startDate: string;
@@ -11,17 +11,21 @@ interface Booking {
   numNights: number;
   numGuests: number;
   status: "unconfirmed" | "checked-in" | "checked-out";
+  cabinPrice?: number;
   totalPrice: number;
   extrasPrice?: number;
   hasBreakfast?: boolean;
   isPaid?: boolean;
+  observations?: string;
   cabins: {
     name?: string;
   };
   guests: {
     fullName: string;
     email: string;
+    country?: string;
     nationality?: string;
+    nationalID?: string;
     countryFlag?: string;
   };
 }
@@ -29,12 +33,12 @@ interface Booking {
 interface FilterOptions {
   field: string;
   value: string;
-  method?: "eq" | "neq" | "gt" | "gte" | "lt" | "lte";
+  method?: string;
 }
 
 interface SortByOptions {
   field: string;
-  direction: "asc" | "desc";
+  direction: string;
 }
 
 interface GetBookingsOptions {
@@ -45,6 +49,7 @@ interface GetBookingsOptions {
 
 type BookingUpdate = Partial<Omit<Booking, "id" | "cabins" | "guests">>;
 
+// ============ API FUNCTIONS ============
 export async function getBookings({
   filter = null,
   sortBy = null,
@@ -59,8 +64,7 @@ export async function getBookings({
 
   // FILTER
   if (filter) {
-    const method = filter.method || "eq";
-    query = (query as any)[method](filter.field, filter.value);
+    query = (query as any)["eq"](filter.field, filter.value);
   }
 
   // SORT

@@ -11,7 +11,18 @@ import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import { Booking as IBooking } from "../../services/apiBookings";
 
+//============ TYPES =============
+interface Booking {
+  booking: IBooking;
+}
+
+interface PriceProps {
+  $isPaid?: boolean;
+}
+
+//============ STYLED COMPONENTS =============
 const StyledBookingDataBox = styled.section`
   /* Box */
   background-color: var(--color-grey-0);
@@ -68,7 +79,7 @@ const Guest = styled.div`
   }
 `;
 
-const Price = styled.div`
+const Price = styled.div<PriceProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -101,8 +112,9 @@ const Footer = styled.footer`
   text-align: right;
 `;
 
-// A purely presentational component
-function BookingDataBox({ booking }) {
+//============ MAIN COMPONENT =============
+// Purely presentational
+function BookingDataBox({ booking }: Booking) {
   const {
     created_at,
     startDate,
@@ -168,8 +180,10 @@ function BookingDataBox({ booking }) {
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
+              cabinPrice &&
+              extrasPrice &&
               ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
+                extrasPrice,
               )} breakfast)`}
           </DataItem>
 

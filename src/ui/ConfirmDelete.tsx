@@ -23,8 +23,8 @@ const StyledConfirmDelete = styled.div`
 interface ConfirmDeleteProps {
   resourceName: string;
   onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  onCloseModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled: boolean;
+  onCloseModal?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 }
 
 function ConfirmDelete({
