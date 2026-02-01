@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "types": ["vite/client"],
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "removeComments": true,
+    "noEmit": true,
+    "pretty": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "es2022",
+    "moduleResolution": "Node",
+    "esModuleInterop": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
+}

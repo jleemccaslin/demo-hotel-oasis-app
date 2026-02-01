@@ -11,16 +11,11 @@ npm install
 npm run dev
 ```
 
-## Feature Roadmap
+## Roadmap
 
-- Further data input sanitization and .env handling required.
-- More elaborate back-end component necessary for better security.
-- User-facing companion website for guests to browse properties and make bookings.
-
-## TODOs
-
-- Sample bookings data grows stale after 24 hours.
-  - Sample bookings data should auto-refresh periodically without manual upload.
+- User-facing companion website for guests to browse properties and make bookings
+- React Query v4 -> v5 upgrade
+- Further TypeScript enhancements
 
 ## Bugs Being Monitored
 
