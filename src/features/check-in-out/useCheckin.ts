@@ -3,9 +3,15 @@ import { updateBooking } from "../../services/apiBookings";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
+interface Breakfast {
+  hasBreakfast: boolean;
+  extrasPrice: number;
+  totalPrice: number;
+}
+
 interface MutationOptions {
   bookingID: string;
-  breakfast: any;
+  breakfast: Breakfast | Record<string, never>;
 }
 
 export function useCheckin() {

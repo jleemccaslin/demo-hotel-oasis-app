@@ -1,13 +1,15 @@
+import { UseMutateFunction } from "@tanstack/react-query";
 import Button from "../../ui/Button";
 import { useCheckout } from "./useCheckout";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES =============
 interface CheckoutButtonProps {
-  bookingID: string | void;
+  bookingID: string;
 }
 
 interface Checkout {
-  checkout: any;
+  checkout: UseMutateFunction<BookingInterface, unknown, string, unknown>;
   isCheckingOut: boolean;
 }
 

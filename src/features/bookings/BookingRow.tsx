@@ -18,11 +18,11 @@ import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import { useCheckout } from "../check-in-out/useCheckout";
 import { useDeleteBooking } from "./useDeleteBooking";
-import { Booking as IBooking } from "../../services/apiBookings";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES ==============
 interface Booking {
-  booking: IBooking;
+  booking: BookingInterface;
 }
 
 //============ STYLED COMPONENTS ==============

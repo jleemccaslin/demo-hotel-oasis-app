@@ -4,23 +4,11 @@ import Tag from "../../ui/Tag";
 import CheckoutButton from "./CheckoutButton";
 import { Flag } from "../../ui/Flag";
 import { Link } from "react-router-dom";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES =============
 interface TodayItemProps {
-  activity: any;
-}
-
-interface Guests {
-  countryFlag: string;
-  nationality: string;
-  fullName: string;
-}
-
-interface Activity {
-  id: string;
-  status: string;
-  guests: Guests;
-  numNights: number;
+  activity: BookingInterface;
 }
 
 //============ STYLED COMPONENTS =============
@@ -45,7 +33,7 @@ const Guest = styled.div`
 
 //============ MAIN COMPONENT =============
 function TodayItem({ activity }: TodayItemProps) {
-  const { id, status, guests, numNights }: Activity = activity;
+  const { id, status, guests, numNights } = activity;
 
   return (
     <StyledTodayItem>

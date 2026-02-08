@@ -2,10 +2,17 @@ import { HiOutlineBriefcase, HiOutlineChartBar } from "react-icons/hi";
 import { HiOutlineBanknotes, HiOutlineCalendarDays } from "react-icons/hi2";
 import Stat from "./Stat";
 import { formatCurrency } from "../../utils/helpers";
+import { BookingInterface } from "../../types/interfaces";
+
+interface RecentBookings {
+  created_at: Date;
+  totalPrice: number;
+  extrasPrice: number;
+}
 
 interface StatsOptions {
-  bookings: any;
-  confirmedStays: any[];
+  bookings: RecentBookings[];
+  confirmedStays: BookingInterface[];
   cabinCount: number;
   numDays: number;
 }
@@ -18,7 +25,7 @@ function Stats({
 }: StatsOptions) {
   const numBookings = bookings.length;
   const sales = bookings.reduce(
-    (acc: any, cur: any) => acc + cur.totalPrice,
+    (acc: number, cur: RecentBookings) => acc + cur.totalPrice,
     0,
   );
   const checkins = confirmedStays.length;

@@ -1,21 +1,10 @@
 import supabase, { supabaseUrl } from "./supabase";
+import { CabinInterface } from "../types/interfaces";
 
 //============ TYPES ==============
-export interface CabinData {
-  name: string;
-  maxCapacity: number;
-  regularPrice: number;
-  discount: number;
-  description: string;
-}
-
-interface Cabin extends CabinData {
-  id?: string;
-  image: string | File;
-}
 
 interface CreateOrUpdateCabinOptions {
-  newCabinData: Cabin;
+  newCabinData: CabinInterface;
   id?: string;
 }
 

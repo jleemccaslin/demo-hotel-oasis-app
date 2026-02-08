@@ -6,10 +6,11 @@ import Row from "../../ui/Row";
 import { useTodayActivity } from "./useTodayActivity";
 import Spinner from "../../ui/Spinner";
 import TodayItem from "./TodayItem";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES =============
 interface Activities {
-  activities: any[];
+  activities: BookingInterface[];
   isLoading: boolean;
 }
 

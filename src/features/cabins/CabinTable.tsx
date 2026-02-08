@@ -5,6 +5,7 @@ import Table from "../../ui/Table";
 import CabinRow from "./CabinRow";
 import { useCabins } from "./useCabins";
 import Empty from "../../ui/Empty";
+import { CabinInterface } from "../../types/interfaces";
 
 function CabinTable() {
   const { isLoading, cabins } = useCabins();
@@ -44,7 +45,9 @@ function CabinTable() {
         </Table.Header>
         <Table.Body
           data={sortedCabins}
-          render={(cabin: any) => <CabinRow cabin={cabin} key={cabin.id} />}
+          render={(cabin: CabinInterface) => (
+            <CabinRow cabin={cabin} key={cabin.id} />
+          )}
         />
       </Table>
     </Menus>

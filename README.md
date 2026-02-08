@@ -16,9 +16,8 @@ npm run dev
 
 ## Roadmap
 
-- User-facing companion website coming next for guests to browse properties and make bookings
+- (in progress) User-facing companion website for guests to browse properties and make bookings
 - React Query v4 -> v5 upgrade
-- Further TypeScript enhancements
 
 ## Bugs Being Monitored
 

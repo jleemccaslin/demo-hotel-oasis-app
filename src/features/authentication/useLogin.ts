@@ -22,8 +22,8 @@ export function useLogin() {
       toast.success("Login successful");
       navigate("/dashboard", { replace: true });
     },
-    onError: (error: any) => {
-      toast.error(`${error.message}: ${error.cause.message}`);
+    onError: (error: Error) => {
+      toast.error(`${error.message}`);
     },
   });
 

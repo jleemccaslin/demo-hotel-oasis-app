@@ -11,11 +11,11 @@ import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
-import { Booking as IBooking } from "../../services/apiBookings";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES =============
 interface Booking {
-  booking: IBooking;
+  booking: BookingInterface;
 }
 
 interface PriceProps {
