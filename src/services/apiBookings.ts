@@ -1,35 +1,9 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 import { PAGE_SIZE } from "../utils/constants";
+import { BookingInterface } from "../types/interfaces";
 
 // ============ TYPES ============
-export interface Booking {
-  id: string;
-  created_at: string;
-  startDate: string;
-  endDate: string;
-  numNights: number;
-  numGuests: number;
-  status: "unconfirmed" | "checked-in" | "checked-out";
-  cabinPrice?: number;
-  totalPrice: number;
-  extrasPrice?: number;
-  hasBreakfast?: boolean;
-  isPaid?: boolean;
-  observations?: string;
-  cabins: {
-    name?: string;
-  };
-  guests: {
-    fullName: string;
-    email: string;
-    country?: string;
-    nationality?: string;
-    nationalID?: string;
-    countryFlag?: string;
-  };
-}
-
 interface FilterOptions {
   field: string;
   value: string;
@@ -47,7 +21,9 @@ interface GetBookingsOptions {
   page?: number;
 }
 
-type BookingUpdate = Partial<Omit<Booking, "id" | "cabins" | "guests">>;
+type BookingUpdate = Partial<
+  Omit<BookingInterface, "id" | "cabins" | "guests">
+>;
 
 // ============ API FUNCTIONS ============
 export async function getBookings({
@@ -91,7 +67,7 @@ export async function getBookings({
   return { data, count };
 }
 
-export async function getBooking(id: string): Promise<Booking> {
+export async function getBooking(id: string): Promise<BookingInterface> {
   const { data, error } = await supabase
     .from("bookings")
     .select("*, cabins(*), guests(*)")
@@ -159,7 +135,7 @@ export async function getStaysTodayActivity() {
 export async function updateBooking(
   id: string,
   updates: BookingUpdate,
-): Promise<Booking> {
+): Promise<BookingInterface> {
   const { data, error } = await supabase
     .from("bookings")
     .update(updates)

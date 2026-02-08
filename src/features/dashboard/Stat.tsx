@@ -5,7 +5,7 @@ import styled from "styled-components";
 interface StatOptions {
   icon: ReactElement | string;
   title: string;
-  value: string;
+  value: number | string;
   color: string;
 }
 

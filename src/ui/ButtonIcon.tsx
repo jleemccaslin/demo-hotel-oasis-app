@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface ButtonIconProps {
   disabled?: boolean;
-  onClick?: any;
+  onClick?: () => void;
 }
 
 const ButtonIcon = styled.button<ButtonIconProps>`

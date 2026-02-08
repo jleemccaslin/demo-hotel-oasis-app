@@ -6,6 +6,7 @@ import Menus from "../../ui/Menus";
 import Empty from "../../ui/Empty";
 import Spinner from "../../ui/Spinner";
 import Pagination from "../../ui/Pagination";
+import { BookingInterface } from "../../types/interfaces";
 
 function BookingTable() {
   const { isLoading, bookings, count } = useBookings();
@@ -27,7 +28,7 @@ function BookingTable() {
 
         <Table.Body
           data={bookings}
-          render={(booking: any) => (
+          render={(booking: BookingInterface) => (
             <BookingRow key={booking.id} booking={booking} />
           )}
         />

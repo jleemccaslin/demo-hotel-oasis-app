@@ -11,7 +11,7 @@ export function useUpdateSetting() {
       toast.success("Setting successfully edited");
       queryClient.invalidateQueries(["settings"]);
     },
-    onError: (error: any) => toast.error(error.message),
+    onError: (error: Error) => toast.error(error.message),
   });
 
   return { isUpdating, updateSetting };

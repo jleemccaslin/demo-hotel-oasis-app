@@ -25,6 +25,7 @@ function DashboardLayout() {
   const { cabins, isLoading: isLoadingCabins } = useCabins();
 
   if (cabins === undefined) return;
+  if (bookings === undefined) return;
 
   if (isLoadingBookings || isLoadingStays || isLoadingCabins)
     return <Spinner />;
@@ -32,7 +33,7 @@ function DashboardLayout() {
   return (
     <StyledDashboardLayout>
       <Stats
-        bookings={bookings}
+        bookings={bookings} // BOOKINGS TYPE INCOMPATbILITY CAN'T JUST ?: THE INTERFACE 'CAUSE THAT FUCKS THINGS UP EVERYWHERE ELSE NOW THAT THOSE VALUES COULD BE UNDEFINED.
         confirmedStays={confirmedStays}
         numDays={numDays}
         cabinCount={cabins.length}

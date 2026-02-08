@@ -9,16 +9,11 @@ import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import Textarea from "../../ui/Textarea";
 import FileInput from "../../ui/FileInput";
-import { CabinData } from "../../services/apiCabins";
+import { CabinInterface } from "../../types/interfaces";
 
 //============ TYPES =============
-export interface Cabin extends CabinData {
-  id?: string;
-  image: FileList | string; // FileList for new uploads, string for existing
-}
-
 interface CreateCabinFormOptions {
-  cabinToUpdate?: Cabin | Record<string, never>;
+  cabinToUpdate?: CabinInterface | Record<string, never>;
   onCloseModal?: () => void;
 }
 
@@ -40,7 +35,7 @@ function CreateCabinForm({
   });
   const { errors } = formState;
 
-  function onSubmit(data: Cabin) {
+  function onSubmit(data: CabinInterface) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isUpdateSession) {

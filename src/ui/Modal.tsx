@@ -15,7 +15,7 @@ interface ModalProps {
 
 interface OpenProps {
   children: React.ReactElement;
-  opens: any;
+  opens: string;
 }
 
 interface WindowProps {

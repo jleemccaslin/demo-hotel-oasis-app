@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { createOrUpdateCabin } from "../../services/apiCabins";
+import { CabinInterface } from "../../types/interfaces";
 
 interface MutationOptions {
-  newCabinData: any;
+  newCabinData: CabinInterface;
   id: string | undefined;
 }
 
@@ -17,7 +18,7 @@ export function useUpdateCabin() {
       toast.success("Cabin successfully updated");
       queryClient.invalidateQueries(["cabins"]);
     },
-    onError: (error: any) => toast.error(error.message),
+    onError: (error: Error) => toast.error(error.message),
   });
 
   return { isUpdating, updateCabin };

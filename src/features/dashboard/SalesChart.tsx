@@ -14,8 +14,14 @@ import { useDarkMode } from "../../context/DarkModeContext";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
 
 //============ TYPES ==============
+interface SalesChartBooking {
+  created_at: string;
+  extrasPrice: number;
+  totalPrice: number;
+}
+
 interface SalesChartOptions {
-  bookings: any;
+  bookings: SalesChartBooking[];
   numDays: number;
 }
 
@@ -53,15 +59,27 @@ function SalesChart({ bookings, numDays }: SalesChartOptions) {
     end: new Date(),
   });
 
+  if (allDates === undefined) return;
+
   const data = allDates.map((date) => {
     return {
       label: format(date, "MMM dd"),
       totalSales: bookings
-        .filter((booking: any) => isSameDay(date, new Date(booking.created_at)))
-        .reduce((acc: any, cur: any) => acc + cur.totalPrice, 0),
+        .filter((booking: SalesChartBooking) =>
+          isSameDay(date, new Date(booking.created_at)),
+        )
+        .reduce(
+          (acc: number, cur: SalesChartBooking) => acc + cur.totalPrice,
+          0,
+        ),
       extrasSales: bookings
-        .filter((booking: any) => isSameDay(date, new Date(booking.created_at)))
-        .reduce((acc: any, cur: any) => acc + cur.extrasPrice, 0),
+        .filter((booking: SalesChartBooking) =>
+          isSameDay(date, new Date(booking.created_at)),
+        )
+        .reduce(
+          (acc: number, cur: SalesChartBooking) => acc + cur.extrasPrice,
+          0,
+        ),
     };
   });
 

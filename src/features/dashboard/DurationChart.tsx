@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useDarkMode } from "../../context/DarkModeContext";
+import { BookingInterface } from "../../types/interfaces";
 
 //============ TYPES ==============
 interface ChartDataObject {
@@ -128,7 +129,7 @@ const startDataDark: ChartDataObject[] = [
 ];
 
 //============ DATA FUNCTIONS ==============
-function prepareData(startData: ChartDataObject[], stays: any[]) {
+function prepareData(startData: ChartDataObject[], stays: BookingInterface[]) {
   function incArrayValue(arr: any[], field: string) {
     return arr.map((obj) =>
       obj.duration === field ? { ...obj, value: obj.value + 1 } : obj,
@@ -186,7 +187,6 @@ function DurationChart({ confirmedStays }: DurationChartOptions) {
           <Legend
             verticalAlign="middle"
             align="right"
-            width="30%"
             layout="vertical"
             iconSize={15}
             iconType="circle"
