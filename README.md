@@ -1,6 +1,6 @@
 # Demo: Hotel Guest/Bookings Management App
 
-Built in Vite with React, TypeScript and a Supabase database. Uses React Query, React Hook Form, Recharts, Styled Components, and other libraries to render a fully-featured app for hotel staff managing property bookings, guest information, check-ins/check-outs, cabin listings, and sales data. Includes the ability to add other employee user accounts and to do basic management of those accounts such as updating name, password, and personal avatar. 
+Built in Vite with React, TypeScript and a Supabase database. Uses React Query, React Hook Form, Recharts, Styled Components, and other libraries to render a fully-featured app for hotel staff managing property bookings, guest information, check-ins/check-outs, cabin listings, and sales data. Includes the ability to add other employee user accounts and to do basic management of those accounts such as updating name, password, and personal avatar. Unit tests with Vitest.
 
 Hotel guests can register an account and create bookings [at the customer facing website here](https://github.com/jleemccaslin/demo-hotel-oasis-website).
 
@@ -17,7 +17,7 @@ npm run dev
 ```
 
 ## Roadmap
-
+- e2e testing with Cypress
 - React Query v4 -> v5 upgrade
 
 ## Bugs Being Monitored
