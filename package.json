@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "cypress open --e2e",
+    "test:e2e:ci": "cypress run --e2e"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
@@ -30,6 +32,7 @@
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "cypress": "^15.11.0",
     "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react": "^7.32.2",
