@@ -1,4 +1,17 @@
+import { AuthError, isAuthRetryableFetchError } from "@supabase/supabase-js";
 import supabase, { supabaseUrl } from "./supabase";
+
+//============ ERRORS ==============
+const NETWORK_ERROR_MESSAGE =
+  "Couldn't reach server. Check your internet connection. If you use a script blocker or privacy extension, allow supabase.co on this site and try again.";
+
+function authErrorMessage(error: AuthError) {
+  // Status 0 means request never got a response: user is offline browser extension blocked request to Supabase
+  if (isAuthRetryableFetchError(error) && error.status === 0)
+    return NETWORK_ERROR_MESSAGE;
+
+  return error.message;
+}
 
 //============ TYPES ==============
 interface SignupOptions {
@@ -42,7 +55,31 @@ export async function login({ email, password }: LoginOptions) {
     password,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(authErrorMessage(error));
+
+  return data;
+}
+
+export async function loginDemo() {
+  // Demo credentials live in a Netlify Function, not in client bundle
+  let res: Response;
+  try {
+    res = await fetch("/.netlify/functions/demo-login", { method: "POST" });
+  } catch {
+    throw new Error(NETWORK_ERROR_MESSAGE);
+  }
+
+  const tokens = await res.json().catch(() => ({}));
+
+  if (!res.ok || !tokens.access_token)
+    throw new Error(tokens.error ?? "Demo login failed");
+
+  const { data, error } = await supabase.auth.setSession({
+    access_token: tokens.access_token,
+    refresh_token: tokens.refresh_token,
+  });
+
+  if (error) throw new Error(authErrorMessage(error));
 
   return data;
 }
@@ -60,7 +97,7 @@ export async function getCurrentUser() {
     error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError) throw new Error(userError.message);
+  if (userError) throw new Error(authErrorMessage(userError));
 
   return user;
 }
