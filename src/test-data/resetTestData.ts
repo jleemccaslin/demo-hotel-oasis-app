@@ -6,8 +6,8 @@ import { bookings } from "./data-bookings";
 import { cabins } from "./data-cabins";
 import { guests } from "./data-guests";
 
-// Takes the Supabase client as a parameter so this runs both in the browser
-// (Uploader) and on the server (the demo-login Netlify Function)
+// Takes Supabase client as parameter so this runs both in browser
+// (Uploader) and on server (demo-login Netlify Function)
 
 async function deleteGuests(supabase: SupabaseClient) {
   const { error } = await supabase.from("guests").delete().gt("id", 0);
@@ -35,7 +35,6 @@ async function createCabins(supabase: SupabaseClient) {
 }
 
 async function createBookings(supabase: SupabaseClient) {
-  // Bookings need a guestID and a cabinID. We can't tell Supabase IDs for each object; it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIDs and cabinIDs, and then replace the original IDs in the booking data with the actual ones from the DB
   const { data: guestsIDs } = await supabase
     .from("guests")
     .select("id")
@@ -48,7 +47,7 @@ async function createBookings(supabase: SupabaseClient) {
   const allCabinIDs = cabinsIDs?.map((cabin) => cabin.id);
 
   const finalBookings = bookings.map((booking) => {
-    // Here relying on the order of cabins, as they don't have and ID yet
+    // Here relying on the order of cabins, as they don't have an ID yet
     const cabin = cabins.at(booking.cabinID - 1)!;
     const numNights = subtractDates(booking.endDate, booking.startDate);
     const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);

@@ -16,6 +16,8 @@ dist-ssr
 .eslintcache
 cypress.env.json
 
+TODO.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

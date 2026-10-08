@@ -3,7 +3,7 @@ import { subHours } from "date-fns";
 import { supabaseUrl } from "../../src/services/supabaseUrl";
 import { resetAllTestData } from "../../src/test-data/resetTestData";
 
-// Runs on Netlify's servers so demo login doesn't reach client, only resulting session tokens
+// Runs on Netlify's servers so demo login doesn't reach client, only session tokens
 
 const DEMO_DATA_MAX_AGE_HOURS = 6;
 
@@ -11,9 +11,9 @@ async function resetDemoDataIfStale(supabase: SupabaseClient) {
   const now = new Date();
   const cutoff = subHours(now, DEMO_DATA_MAX_AGE_HOURS).toISOString();
 
-  // Claim the reset by moving the timestamp forward, but only if it's stale.
-  // Postgres applies this update to the row one request at a time, so when
-  // two demo logins arrive together, only one of them gets the row back.
+  // Claim reset by moving timestamp forward, but only if stale
+  // Postgres applies update to row one request at a time;
+  // when two demo logins arrive together, only one gets the row back
   const { data: claimed, error } = await supabase
     .from("settings")
     .update({ lastDemoReset: now.toISOString() })
@@ -27,7 +27,7 @@ async function resetDemoDataIfStale(supabase: SupabaseClient) {
   try {
     await resetAllTestData(supabase);
   } catch (err) {
-    // Release the claim so the next demo login tries again
+    // Release claim so next demo login tries again
     await supabase.from("settings").update({ lastDemoReset: null }).eq("id", 1);
     throw err;
   }
@@ -60,8 +60,7 @@ export default async (req: Request) => {
     return Response.json({ error: "Demo login failed" }, { status: 500 });
   }
 
-  // Stale data is better than no login, so a failed reset is logged
-  // (visible in Netlify's function logs) rather than blocking the demo user
+  // Stale data better than no login - a failed reset is logged in Netlify's function logs) rather than blocking demo user
   try {
     await resetDemoDataIfStale(supabase);
   } catch (err) {

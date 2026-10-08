@@ -6,7 +6,7 @@ const NETWORK_ERROR_MESSAGE =
   "Couldn't reach server. Check your internet connection. If you use a script blocker or privacy extension, allow supabase.co on this site and try again.";
 
 function authErrorMessage(error: AuthError) {
-  // Status 0 means the request never got a response: the user is offline, or a browser extension blocked the request to Supabase
+  // Status 0 means request never got a response: user is offline browser extension blocked request to Supabase
   if (isAuthRetryableFetchError(error) && error.status === 0)
     return NETWORK_ERROR_MESSAGE;
 
@@ -61,7 +61,7 @@ export async function login({ email, password }: LoginOptions) {
 }
 
 export async function loginDemo() {
-  // The demo credentials live in a Netlify Function, not in the client bundle
+  // Demo credentials live in a Netlify Function, not in client bundle
   let res: Response;
   try {
     res = await fetch("/.netlify/functions/demo-login", { method: "POST" });

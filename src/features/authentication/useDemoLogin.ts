@@ -11,8 +11,8 @@ export function useDemoLogin() {
   const { mutate: loginDemo, isLoading } = useMutation({
     mutationFn: loginDemoAPI,
     onSuccess: (data: any) => {
-      // The demo data may have just been reset, so drop anything cached
-      // before login and let the dashboard fetch fresh data
+      // Demo data may have just been reset, so drop anything cached
+      // before login and let dashboard fetch fresh data
       queryClient.removeQueries();
       queryClient.setQueryData(["user"], data.user);
       toast.success("Login successful");
