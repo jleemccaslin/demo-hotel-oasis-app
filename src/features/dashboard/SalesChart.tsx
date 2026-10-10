@@ -11,7 +11,8 @@ import {
   YAxis,
 } from "recharts";
 import { useDarkMode } from "../../context/DarkModeContext";
-import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
+import { eachDayOfInterval, format, subDays } from "date-fns";
+import { calcDailySales } from "./dashboardCalculations";
 
 //============ TYPES ==============
 interface SalesChartBooking {
@@ -61,27 +62,7 @@ function SalesChart({ bookings, numDays }: SalesChartOptions) {
 
   if (allDates === undefined) return;
 
-  const data = allDates.map((date) => {
-    return {
-      label: format(date, "MMM dd"),
-      totalSales: bookings
-        .filter((booking: SalesChartBooking) =>
-          isSameDay(date, new Date(booking.created_at)),
-        )
-        .reduce(
-          (acc: number, cur: SalesChartBooking) => acc + cur.totalPrice,
-          0,
-        ),
-      extrasSales: bookings
-        .filter((booking: SalesChartBooking) =>
-          isSameDay(date, new Date(booking.created_at)),
-        )
-        .reduce(
-          (acc: number, cur: SalesChartBooking) => acc + cur.extrasPrice,
-          0,
-        ),
-    };
-  });
+  const data = calcDailySales(allDates, bookings);
 
   return (
     <StyledSalesChart>

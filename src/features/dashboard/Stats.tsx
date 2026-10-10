@@ -3,6 +3,7 @@ import { HiOutlineBanknotes, HiOutlineCalendarDays } from "react-icons/hi2";
 import Stat from "./Stat";
 import { formatCurrency } from "../../utils/helpers";
 import { BookingInterface } from "../../types/interfaces";
+import { calcOccupancyRate, calcSales } from "./dashboardCalculations";
 
 interface RecentBookings {
   created_at: Date;
@@ -24,14 +25,9 @@ function Stats({
   cabinCount,
 }: StatsOptions) {
   const numBookings = bookings.length;
-  const sales = bookings.reduce(
-    (acc: number, cur: RecentBookings) => acc + cur.totalPrice,
-    0,
-  );
+  const sales = calcSales(bookings);
   const checkins = confirmedStays.length;
-  const occupancyRate =
-    confirmedStays.reduce((acc, cur) => acc + cur.numNights, 0) /
-    (numDays * cabinCount);
+  const occupancyRate = calcOccupancyRate(confirmedStays, numDays, cabinCount);
 
   return (
     <>

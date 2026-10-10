@@ -4,39 +4,19 @@ import {
   formatDistanceFromNow,
   getToday,
   formatCurrency,
+  getPageParam,
+  getNumDaysParam,
 } from "./../src/utils/helpers";
 
 // ─────────────────────────────────────────────
 // subtractDates
 // ─────────────────────────────────────────────
 describe("subtractDates", () => {
-  it("returns 0 when both dates are the same", () => {
-    const result = subtractDates("2024-01-15", "2024-01-15");
-    expect(result).toBe(0);
-  });
-
-  it("returns a positive number when dateStr1 is later than dateStr2", () => {
-    // Jan 20 minus Jan 15 = 5 days
-    const result = subtractDates("2024-01-20", "2024-01-15");
-    expect(result).toBe(5);
-  });
-
-  it("returns a negative number when dateStr1 is earlier than dateStr2", () => {
-    // Jan 10 minus Jan 15 = -5 days
-    const result = subtractDates("2024-01-10", "2024-01-15");
-    expect(result).toBe(-5);
-  });
-
-  it("handles dates across different months", () => {
-    // Feb 5 minus Jan 15 = 21 days
-    const result = subtractDates("2024-02-05", "2024-01-15");
-    expect(result).toBe(21);
-  });
-
-  it("handles dates across different years", () => {
-    // Jan 1 2025 minus Jan 1 2024 = 366 days (2024 is a leap year)
-    const result = subtractDates("2025-01-01", "2024-01-01");
-    expect(result).toBe(366);
+  // The date maths itself belongs to date-fns. What is ours is the argument
+  // order: first date minus second date
+  it("subtracts the second date from the first", () => {
+    expect(subtractDates("2024-01-20", "2024-01-15")).toBe(5);
+    expect(subtractDates("2024-01-15", "2024-01-20")).toBe(-5);
   });
 });
 
@@ -67,8 +47,21 @@ describe("formatDistanceFromNow", () => {
     const result = formatDistanceFromNow("2024-07-01T12:00:00.000Z");
     // date-fns outputs "in about 1 month", our helper replaces "in" → "In"
     // and strips "about "
-    expect(result).toContain("In");
-    expect(result).not.toContain("in"); // lowercase "in" should be gone
+    expect(result).toBe("In 1 month");
+  });
+
+  it("only capitalises the leading 'in', not one inside a later word", () => {
+    const result = formatDistanceFromNow("2024-06-01T12:20:00.000Z");
+    expect(result).toBe("In 20 minutes");
+  });
+
+  it("leaves words containing 'in' untouched for past dates", () => {
+    expect(formatDistanceFromNow("2024-06-01T11:55:00.000Z")).toBe(
+      "5 minutes ago",
+    );
+    expect(formatDistanceFromNow("2024-06-01T11:59:50.000Z")).toBe(
+      "less than a minute ago",
+    );
   });
 
   it("formats a date 3 days ago correctly", () => {
@@ -90,12 +83,6 @@ describe("getToday", () => {
     vi.useRealTimers();
   });
 
-  it("returns an ISO string", () => {
-    const result = getToday();
-    // A valid ISO string can always be parsed back into a non-NaN Date
-    expect(new Date(result).toString()).not.toBe("Invalid Date");
-  });
-
   it("returns start of day (midnight UTC) by default", () => {
     const result = getToday();
     expect(result).toBe("2024-06-15T00:00:00.000Z");
@@ -105,12 +92,40 @@ describe("getToday", () => {
     const result = getToday({ end: true });
     expect(result).toBe("2024-06-15T23:59:59.999Z");
   });
+});
 
-  it("start-of-day and end-of-day results are on the same calendar date", () => {
-    const start = getToday();
-    const end = getToday({ end: true });
-    // Both should begin with the same YYYY-MM-DD prefix
-    expect(start.slice(0, 10)).toBe(end.slice(0, 10));
+// ─────────────────────────────────────────────
+// getPageParam / getNumDaysParam
+// ─────────────────────────────────────────────
+// Both read a number the user can type into the address bar, so the invalid
+// cases matter as much as the valid ones
+const invalidNumbers = ["0", "-1", "1.5", "abc", "", "Infinity"];
+
+describe("getPageParam", () => {
+  it("reads the page from the URL", () => {
+    expect(getPageParam(new URLSearchParams("page=3"))).toBe(3);
+  });
+
+  it("is page 1 when the URL has no page", () => {
+    expect(getPageParam(new URLSearchParams())).toBe(1);
+  });
+
+  it.each(invalidNumbers)("is page 1 for the invalid page '%s'", (value) => {
+    expect(getPageParam(new URLSearchParams({ page: value }))).toBe(1);
+  });
+});
+
+describe("getNumDaysParam", () => {
+  it("reads the number of days from the URL", () => {
+    expect(getNumDaysParam(new URLSearchParams("last=30"))).toBe(30);
+  });
+
+  it("is 7 days when the URL has no period", () => {
+    expect(getNumDaysParam(new URLSearchParams())).toBe(7);
+  });
+
+  it.each(invalidNumbers)("is 7 days for the invalid period '%s'", (value) => {
+    expect(getNumDaysParam(new URLSearchParams({ last: value }))).toBe(7);
   });
 });
 
@@ -118,23 +133,9 @@ describe("getToday", () => {
 // formatCurrency
 // ─────────────────────────────────────────────
 describe("formatCurrency", () => {
-  it("formats a whole dollar amount", () => {
-    expect(formatCurrency(100)).toBe("$100.00");
-  });
-
-  it("formats a value with cents", () => {
-    expect(formatCurrency(9.99)).toBe("$9.99");
-  });
-
-  it("formats zero correctly", () => {
-    expect(formatCurrency(0)).toBe("$0.00");
-  });
-
-  it("formats large numbers with commas", () => {
-    expect(formatCurrency(1000000)).toBe("$1,000,000.00");
-  });
-
-  it("formats negative values (e.g. refunds)", () => {
-    expect(formatCurrency(-49.5)).toBe("-$49.50");
+  // The formatting itself belongs to Intl. What is ours is the configuration:
+  // US dollars, English separators, two decimals
+  it("formats as US dollars with thousands separators and cents", () => {
+    expect(formatCurrency(1234.5)).toBe("$1,234.50");
   });
 });

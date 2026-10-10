@@ -1,40 +1,23 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   getBookings,
   getBooking,
+  getBookingsAfterDate,
+  getStaysAfterDate,
+  getStaysTodayActivity,
   updateBooking,
   deleteBooking,
 } from "../src/services/apiBookings";
+import { PAGE_SIZE } from "../src/utils/constants";
+import { supabaseFake, argsOf } from "./supabaseFake";
 
-// ─────────────────────────────────────────────
-// Mock Supabase
-// ─────────────────────────────────────────────
-const mockSelect = vi.fn();
-const mockEq = vi.fn();
-const mockOrder = vi.fn();
-const mockRange = vi.fn();
-const mockSingle = vi.fn();
-const mockUpdate = vi.fn();
-const mockDelete = vi.fn();
-
-vi.mock("../src/services/supabase", () => ({
-  supabaseUrl: "https://test.supabase.co",
-  default: {
-    from: vi.fn(() => ({
-      select: mockSelect,
-      delete: mockDelete,
-      update: mockUpdate,
-    })),
-  },
-}));
-
-// Mock helpers so getToday returns a stable value
-vi.mock("../src/utils/helpers", () => ({
-  getToday: vi.fn(() => "2024-06-15T00:00:00.000Z"),
-}));
+vi.mock("../src/services/supabase", async () => {
+  const { supabaseFake } = await import("./supabaseFake");
+  return { default: supabaseFake.client };
+});
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  supabaseFake.reset();
 });
 
 // ─────────────────────────────────────────────
@@ -43,70 +26,81 @@ beforeEach(() => {
 describe("getBookings", () => {
   it("returns data and count on success", async () => {
     const bookings = [{ id: "1" }];
-    // Build the chain: select -> order -> range -> { data, error, count }
-    mockRange.mockResolvedValue({ data: bookings, error: null, count: 1 });
-    mockOrder.mockReturnValue({ range: mockRange });
-    mockSelect.mockReturnValue({
-      order: mockOrder,
-      eq: mockEq,
-      range: mockRange,
-    });
+    supabaseFake.resolveNext({ data: bookings, count: 1 });
 
-    const result = await getBookings({
-      sortBy: { field: "startDate", direction: "asc" },
-      page: 1,
-    });
+    const result = await getBookings();
 
     expect(result).toEqual({ data: bookings, count: 1 });
-    expect(mockOrder).toHaveBeenCalledWith("startDate", { ascending: true });
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("bookings");
+    // Pagination depends on the exact total, not just the rows on this page
+    expect(query.calls).toContainEqual([
+      "select",
+      expect.any(String),
+      { count: "exact" },
+    ]);
   });
 
-  it("applies descending sort correctly", async () => {
-    mockRange.mockResolvedValue({ data: [], error: null, count: 0 });
-    mockOrder.mockReturnValue({ range: mockRange });
-    mockSelect.mockReturnValue({ order: mockOrder, range: mockRange });
+  it("applies ascending sort", async () => {
+    await getBookings({ sortBy: { field: "startDate", direction: "asc" } });
 
-    await getBookings({
-      sortBy: { field: "totalPrice", direction: "desc" },
-      page: 1,
-    });
+    const [query] = supabaseFake.queries;
+    expect(query.calls).toContainEqual([
+      "order",
+      "startDate",
+      { ascending: true },
+    ]);
+  });
 
-    expect(mockOrder).toHaveBeenCalledWith("totalPrice", { ascending: false });
+  it("applies descending sort", async () => {
+    await getBookings({ sortBy: { field: "totalPrice", direction: "desc" } });
+
+    const [query] = supabaseFake.queries;
+    expect(query.calls).toContainEqual([
+      "order",
+      "totalPrice",
+      { ascending: false },
+    ]);
   });
 
   it("applies filter when provided", async () => {
-    mockRange.mockResolvedValue({ data: [], error: null, count: 0 });
-    mockEq.mockReturnValue({ order: mockOrder, range: mockRange });
-    mockOrder.mockReturnValue({ range: mockRange });
-    mockSelect.mockReturnValue({ eq: mockEq });
+    await getBookings({ filter: { field: "status", value: "checked-in" } });
 
-    await getBookings({
-      filter: { field: "status", value: "checked-in" },
-      sortBy: { field: "startDate", direction: "asc" },
-      page: 1,
-    });
-
-    expect(mockEq).toHaveBeenCalledWith("status", "checked-in");
+    const [query] = supabaseFake.queries;
+    expect(query.calls).toContainEqual(["eq", "status", "checked-in"]);
   });
 
-  it("calculates correct pagination range", async () => {
-    mockRange.mockResolvedValue({ data: [], error: null, count: 0 });
-    mockSelect.mockReturnValue({ range: mockRange });
+  it("neither filters nor sorts unless asked to", async () => {
+    await getBookings();
 
+    const [query] = supabaseFake.queries;
+    const methods = query.calls.map(([method]) => method);
+    expect(methods).not.toContain("eq");
+    expect(methods).not.toContain("order");
+  });
+
+  it("requests the first page by default", async () => {
+    await getBookings();
+
+    const [query] = supabaseFake.queries;
+    expect(query.calls).toContainEqual(["range", 0, PAGE_SIZE - 1]);
+  });
+
+  it("calculates the range of a later page", async () => {
     await getBookings({ page: 3 });
 
-    // PAGE_SIZE is 10, so page 3: from=20, to=29
-    expect(mockRange).toHaveBeenCalledWith(20, 29);
+    const [query] = supabaseFake.queries;
+    expect(query.calls).toContainEqual([
+      "range",
+      2 * PAGE_SIZE,
+      3 * PAGE_SIZE - 1,
+    ]);
   });
 
   it("throws when supabase returns an error", async () => {
-    // getBookings always chains .range(), so the mock must return a chainable object
-    mockRange.mockResolvedValue({
-      data: null,
-      error: { message: "fail" },
-      count: null,
-    });
-    mockSelect.mockReturnValue({ range: mockRange });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "fail" } });
 
     await expect(getBookings()).rejects.toThrow("Bookings could not be loaded");
   });
@@ -118,24 +112,136 @@ describe("getBookings", () => {
 describe("getBooking", () => {
   it("returns a single booking on success", async () => {
     const booking = { id: "5", status: "unconfirmed" };
-    mockSingle.mockResolvedValue({ data: booking, error: null });
-    mockEq.mockReturnValue({ single: mockSingle });
-    mockSelect.mockReturnValue({ eq: mockEq });
+    supabaseFake.resolveNext({ data: booking });
 
     const result = await getBooking("5");
+
     expect(result).toEqual(booking);
-    expect(mockEq).toHaveBeenCalledWith("id", "5");
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("bookings");
+    expect(query.calls).toContainEqual(["eq", "id", "5"]);
+    expect(query.calls).toContainEqual(["single"]);
   });
 
   it("throws when booking is not found", async () => {
-    mockSingle.mockResolvedValue({
-      data: null,
-      error: { message: "not found" },
-    });
-    mockEq.mockReturnValue({ single: mockSingle });
-    mockSelect.mockReturnValue({ eq: mockEq });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "not found" } });
 
     await expect(getBooking("999")).rejects.toThrow("Booking not found");
+  });
+});
+
+// ─────────────────────────────────────────────
+// Dashboard queries
+// ─────────────────────────────────────────────
+// All three compare against "today", so time is frozen mid-afternoon to prove
+// they use the start or the end of the day and not the current moment
+describe("dashboard queries", () => {
+  const START_OF_TODAY = "2024-06-15T00:00:00.000Z";
+  const END_OF_TODAY = "2024-06-15T23:59:59.999Z";
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-06-15T15:30:00.000Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  describe("getBookingsAfterDate", () => {
+    it("returns bookings created between the given date and the end of today", async () => {
+      const bookings = [{ created_at: "2024-06-10", totalPrice: 500 }];
+      supabaseFake.resolveNext({ data: bookings });
+
+      const result = await getBookingsAfterDate("2024-06-08T15:30:00.000Z");
+
+      expect(result).toEqual(bookings);
+
+      const [query] = supabaseFake.queries;
+      expect(query.table).toBe("bookings");
+      expect(query.calls).toContainEqual([
+        "gte",
+        "created_at",
+        "2024-06-08T15:30:00.000Z",
+      ]);
+      // End of day, or bookings created later today would be left out
+      expect(query.calls).toContainEqual(["lte", "created_at", END_OF_TODAY]);
+    });
+
+    it("throws when supabase returns an error", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      supabaseFake.resolveNext({ error: { message: "fail" } });
+
+      await expect(getBookingsAfterDate("2024-06-08")).rejects.toThrow(
+        "Bookings could not get loaded",
+      );
+    });
+  });
+
+  describe("getStaysAfterDate", () => {
+    it("returns stays starting between the given date and today", async () => {
+      const stays = [{ id: "1", startDate: "2024-06-10" }];
+      supabaseFake.resolveNext({ data: stays });
+
+      const result = await getStaysAfterDate("2024-06-08T15:30:00.000Z");
+
+      expect(result).toEqual(stays);
+
+      const [query] = supabaseFake.queries;
+      expect(query.table).toBe("bookings");
+      expect(query.calls).toContainEqual([
+        "gte",
+        "startDate",
+        "2024-06-08T15:30:00.000Z",
+      ]);
+      // Start of day, so stays that only begin tomorrow are left out
+      expect(query.calls).toContainEqual(["lte", "startDate", START_OF_TODAY]);
+    });
+
+    it("throws when supabase returns an error", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      supabaseFake.resolveNext({ error: { message: "fail" } });
+
+      await expect(getStaysAfterDate("2024-06-08")).rejects.toThrow(
+        "Bookings could not get loaded",
+      );
+    });
+  });
+
+  describe("getStaysTodayActivity", () => {
+    it("asks for today's arrivals and today's departures only", async () => {
+      const activity = [{ id: "1", status: "unconfirmed" }];
+      supabaseFake.resolveNext({ data: activity });
+
+      const result = await getStaysTodayActivity();
+
+      expect(result).toEqual(activity);
+
+      const [query] = supabaseFake.queries;
+      expect(query.table).toBe("bookings");
+
+      const [filter] = argsOf(query, "or") as [string];
+      // Arriving: not checked in yet and starting today
+      expect(filter).toContain(
+        `and(status.eq.unconfirmed,startDate.eq.${START_OF_TODAY})`,
+      );
+      // Leaving: checked in and ending today
+      expect(filter).toContain(
+        `and(status.eq.checked-in,endDate.eq.${START_OF_TODAY})`,
+      );
+      expect(query.calls).toContainEqual(["order", "created_at"]);
+    });
+
+    it("throws when supabase returns an error", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      supabaseFake.resolveNext({ error: { message: "fail" } });
+
+      await expect(getStaysTodayActivity()).rejects.toThrow(
+        "Bookings could not get loaded",
+      );
+    });
   });
 });
 
@@ -143,22 +249,23 @@ describe("getBooking", () => {
 // updateBooking
 // ─────────────────────────────────────────────
 describe("updateBooking", () => {
-  it("returns updated booking on success", async () => {
+  it("sends the updates for the given booking and returns the result", async () => {
     const updated = { id: "5", status: "checked-in" };
-    mockSingle.mockResolvedValue({ data: updated, error: null });
-    mockSelect.mockReturnValue({ single: mockSingle });
-    mockEq.mockReturnValue({ select: mockSelect });
-    mockUpdate.mockReturnValue({ eq: mockEq });
+    supabaseFake.resolveNext({ data: updated });
 
     const result = await updateBooking("5", { status: "checked-in" });
+
     expect(result).toEqual(updated);
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("bookings");
+    expect(query.calls).toContainEqual(["update", { status: "checked-in" }]);
+    expect(query.calls).toContainEqual(["eq", "id", "5"]);
   });
 
   it("throws when update fails", async () => {
-    mockSingle.mockResolvedValue({ data: null, error: { message: "fail" } });
-    mockSelect.mockReturnValue({ single: mockSingle });
-    mockEq.mockReturnValue({ select: mockSelect });
-    mockUpdate.mockReturnValue({ eq: mockEq });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "fail" } });
 
     await expect(updateBooking("5", {})).rejects.toThrow(
       "Booking could not be updated",
@@ -170,17 +277,18 @@ describe("updateBooking", () => {
 // deleteBooking
 // ─────────────────────────────────────────────
 describe("deleteBooking", () => {
-  it("completes without error on success", async () => {
-    mockEq.mockResolvedValue({ error: null });
-    mockDelete.mockReturnValue({ eq: mockEq });
-
+  it("deletes the given booking", async () => {
     await expect(deleteBooking("10")).resolves.toBeUndefined();
-    expect(mockEq).toHaveBeenCalledWith("id", "10");
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("bookings");
+    expect(query.calls).toContainEqual(["delete"]);
+    expect(query.calls).toContainEqual(["eq", "id", "10"]);
   });
 
   it("throws when delete fails", async () => {
-    mockEq.mockResolvedValue({ error: { message: "fail" } });
-    mockDelete.mockReturnValue({ eq: mockEq });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "fail" } });
 
     await expect(deleteBooking("10")).rejects.toThrow(
       "Booking could not be deleted",

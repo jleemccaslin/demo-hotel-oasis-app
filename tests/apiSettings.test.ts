@@ -1,44 +1,37 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getSettings, updateSetting } from "../src/services/apiSettings";
+import { supabaseFake } from "./supabaseFake";
 
-// ─────────────────────────────────────────────
-// Mock Supabase
-// ─────────────────────────────────────────────
-const mockSelect = vi.fn();
-const mockSingle = vi.fn();
-const mockUpdate = vi.fn();
-const mockEq = vi.fn();
-
-vi.mock("../src/services/supabase", () => ({
-  default: {
-    from: vi.fn(() => ({
-      select: mockSelect,
-      update: mockUpdate,
-    })),
-  },
-}));
+vi.mock("../src/services/supabase", async () => {
+  const { supabaseFake } = await import("./supabaseFake");
+  return { default: supabaseFake.client };
+});
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  supabaseFake.reset();
 });
 
 // ─────────────────────────────────────────────
 // getSettings
 // ─────────────────────────────────────────────
 describe("getSettings", () => {
-  it("returns settings data on success", async () => {
+  it("returns the single settings row", async () => {
     const settings = { id: 1, minBookingLength: 3, maxBookingLength: 90 };
-    mockSingle.mockResolvedValue({ data: settings, error: null });
-    mockSelect.mockReturnValue({ single: mockSingle });
+    supabaseFake.resolveNext({ data: settings });
 
     const result = await getSettings();
+
     expect(result).toEqual(settings);
-    expect(mockSelect).toHaveBeenCalledWith("*");
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("settings");
+    expect(query.calls).toContainEqual(["select", "*"]);
+    expect(query.calls).toContainEqual(["single"]);
   });
 
   it("throws when supabase returns an error", async () => {
-    mockSingle.mockResolvedValue({ data: null, error: { message: "fail" } });
-    mockSelect.mockReturnValue({ single: mockSingle });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "fail" } });
 
     await expect(getSettings()).rejects.toThrow("Settings could not be loaded");
   });
@@ -48,20 +41,24 @@ describe("getSettings", () => {
 // updateSetting
 // ─────────────────────────────────────────────
 describe("updateSetting", () => {
-  it("returns updated data on success", async () => {
-    mockSingle.mockResolvedValue({ data: { minBookingLength: 5 }, error: null });
-    mockEq.mockReturnValue({ single: mockSingle });
-    mockUpdate.mockReturnValue({ eq: mockEq });
+  it("updates the settings row and returns it", async () => {
+    supabaseFake.resolveNext({ data: { minBookingLength: 5 } });
 
     const result = await updateSetting({ minBookingLength: "5" });
+
+    // The fake only returns the row if .select() was chained, like Supabase
     expect(result).toEqual({ minBookingLength: 5 });
-    expect(mockEq).toHaveBeenCalledWith("id", 1);
+
+    const [query] = supabaseFake.queries;
+    expect(query.table).toBe("settings");
+    expect(query.calls).toContainEqual(["update", { minBookingLength: "5" }]);
+    // There is only one settings row, and it has the id 1
+    expect(query.calls).toContainEqual(["eq", "id", 1]);
   });
 
   it("throws when update fails", async () => {
-    mockSingle.mockResolvedValue({ data: null, error: { message: "fail" } });
-    mockEq.mockReturnValue({ single: mockSingle });
-    mockUpdate.mockReturnValue({ eq: mockEq });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    supabaseFake.resolveNext({ error: { message: "fail" } });
 
     await expect(updateSetting({ maxBookingLength: "120" })).rejects.toThrow(
       "Setting could not be updated",

@@ -13,8 +13,8 @@ export async function getCabins() {
   const { data, error } = await supabase.from("cabins").select("*");
 
   if (error) {
-    console.error("Cabins could not be loaded");
-    throw new Error("");
+    console.error(error);
+    throw new Error("Cabins could not be loaded");
   }
 
   return data;
@@ -70,7 +70,7 @@ export async function createOrUpdateCabin({
 
   if (error) {
     console.error(error);
-    throw new Error("Cabin could not be created");
+    throw new Error(`Cabin could not be ${id ? "updated" : "created"}`);
   }
 
   // 2. Upload Image
@@ -80,10 +80,14 @@ export async function createOrUpdateCabin({
     .from("cabin-images")
     .upload(imageName, newCabinData.image);
 
-  // 3. Delete cabin if there was an error uploading the image
+  // 3. Delete cabin if there was an error uploading the image, but only if we just created it. An edited cabin already existed and must be kept
   if (storageError) {
-    await supabase.from("cabins").delete().eq("id", data.id);
     console.error(storageError);
+
+    if (id)
+      throw new Error("Cabin was updated but the image could not be uploaded");
+
+    await supabase.from("cabins").delete().eq("id", data.id);
     throw new Error(
       "Cabin image could not be uploaded and the cabin was not created",
     );

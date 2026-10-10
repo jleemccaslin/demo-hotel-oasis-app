@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { PAGE_SIZE } from "../utils/constants";
+import { getPageParam } from "../utils/helpers";
 
 // ============ TYPES ============
 interface PaginationButtonProps {
@@ -73,9 +74,7 @@ const PaginationButton = styled.button<PaginationButtonProps>`
 // ============ MAIN COMPONENT ============
 function Pagination({ count }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = !searchParams.get("page")
-    ? 1
-    : Number(searchParams.get("page"));
+  const currentPage = getPageParam(searchParams);
 
   if (count === undefined) return;
   const pageCount = Math.ceil(count / PAGE_SIZE);

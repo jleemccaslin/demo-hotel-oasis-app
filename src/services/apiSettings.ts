@@ -23,6 +23,7 @@ export async function updateSetting(newSetting: NewSetting) {
     .update(newSetting)
     // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
     .eq("id", 1)
+    .select()
     .single();
 
   if (error) {

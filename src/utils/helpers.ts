@@ -9,7 +9,8 @@ export const formatDistanceFromNow = (date: string) =>
     addSuffix: true,
   })
     .replace("about ", "")
-    .replace("in", "In");
+    // Only the leading "in" of a future date, not the one inside "minutes"
+    .replace(/^in /, "In ");
 
 // Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, so we use this to remove any time difference
 export const getToday = function (options: any = {}) {
@@ -23,7 +24,21 @@ export const getToday = function (options: any = {}) {
   return today.toISOString();
 };
 
-export const formatCurrency = (value: number) =>
+// A number in the URL can be anything the user typed into the address bar. Anything that is not a whole number of 1 or more falls back to the default
+const parsePositiveInt = (value: string | null, fallback: number) => {
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 1 ? number : fallback;
+};
+
+// Everything that needs the current page reads it through here, so the table and the pagination footer can never disagree
+export const getPageParam = (searchParams: URLSearchParams) =>
+  parsePositiveInt(searchParams.get("page"), 1);
+
+// The dashboard period in days, e.g. ?last=30
+export const getNumDaysParam = (searchParams: URLSearchParams) =>
+  parsePositiveInt(searchParams.get("last"), 7);
+
+export const formatCurrency =(value: number) =>
   new Intl.NumberFormat("en", { style: "currency", currency: "USD" }).format(
     value,
   );

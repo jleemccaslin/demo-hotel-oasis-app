@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helpers";
 import { useCheckin } from "./useCheckin";
 import { useSettings } from "../settings/useSettings";
+import { calcBreakfastPrice } from "./breakfastPrice";
 
 const Box = styled.div`
   /* Box */
@@ -50,8 +51,11 @@ function CheckinBooking() {
     numNights,
   } = booking;
 
-  const optionalBreakfastPrice =
-    settings.breakfastPrice * numNights * numGuests;
+  const optionalBreakfastPrice = calcBreakfastPrice(
+    settings.breakfastPrice,
+    numNights,
+    numGuests,
+  );
 
   function handleCheckin() {
     if (!confirmPaid) return;
